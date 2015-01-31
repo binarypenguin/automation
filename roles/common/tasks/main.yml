@@ -17,6 +17,7 @@
   - php5-curl
   - php5-mcrypt
   - vagrant
+  - cryptsetup
 
 - name: Apt Add Variety
   apt_repository: repo='ppa:variety/next'
