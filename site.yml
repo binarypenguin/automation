@@ -2,7 +2,21 @@
 # Common Configuration
 - name: apply common configuration to all nodes
   hosts: all
-  connection: local
+  sudo: yes
   roles:
     - common
-    - composer
+
+# Bastions Configuration
+- name: bastion configuration
+  hosts: bastions
+  sudo: yes
+  roles:
+    - bastion
+
+# Workstation Configuration
+- name: workstation configuration
+  hosts: workstations
+  sudo: yes
+  roles:
+    - workstation
+
