@@ -1,0 +1,58 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: Ensure packages are installed
+  apt: pkg={{item}} state=latest
+  with_items:
+  - ssh
+  - htop
+  - sshfs
+  - iotop
+  - iftop
+  - screen
+  - molly-guard
+  - figlet
+  - uptimed
+  - python-dev
+  - python-pip
+#  - php5-cli
+#  - php5-curl
+#  - php5-mcrypt
+#  - cryptsetup
+
+- name: Enable Colors in skel bashrc
+  lineinfile: dest=/etc/skel/.bashrc state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
+
+- name: Find .bashrc files
+  raw: find /home -type f -name ".bashrc"
+  register: bashrc_dir
+  tags: update-bashrc
+
+- name: Update .bashrc to force colored prompts
+  lineinfile: dest={{ item }} state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
+  with_items: bashrc_dir.stdout_lines
+  tags: update-bashrc
+
+
+# Install thefuck python package.
+- pip: name=thefuck
+
+
+# Alias fuck to thefuck
+- name: Add fuck as alias to thefuck in .bashrc
+  lineinfile: dest={{ item }} line="alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
+  with_items: bashrc_dir.stdout_lines
+  tags: update-bashrc
+
+##
+# MOTD
+##
+- name: Remove help text from MOTD
+  file: path=/etc/update-motd.d/10-help-text state=absent
+  notify:
+    - refresh motd
+
+- name: Add ASCII art banner to MOTD
+  copy: src=01-banner dest=/etc/update-motd.d owner=root group=root mode=u+rwx,g=rx,o=rx
+  notify:
+    - refresh motd
