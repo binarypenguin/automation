@@ -21,7 +21,7 @@
   lineinfile: dest=/etc/skel/.bashrc state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
 
 - name: Find .bashrc files
-  raw: find /home -type f -name ".bashrc"
+  raw: find /home -maxdepth 2 -type f -name ".bashrc"
   register: bashrc_dir
   tags: update-bashrc
 
