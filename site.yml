@@ -13,6 +13,13 @@
   roles:
     - bastion
 
+# Web Server Configuration
+- name: web server configuration
+  hosts: web
+  sudo: yes
+  roles:
+    - web
+
 # Workstation Configuration
 - name: workstation configuration
   hosts: workstations
