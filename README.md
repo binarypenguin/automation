@@ -1,5 +1,5 @@
-# Network-Automation
-A few simple ansible roles I use on my home network.
+# Automation
+A few simple ansible roles I use on my home network and VPS's.
 
 ## Common
 Installs a few common utilities on each machine.
