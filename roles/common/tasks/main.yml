@@ -4,6 +4,8 @@
 - name: Ensure packages are installed
   apt: pkg={{item}} state=latest
   with_items:
+  - cowsay
+  - fortune
   - git
   - ssh
   - htop
