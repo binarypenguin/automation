@@ -14,6 +14,7 @@
   - iftop
   - screen
   - molly-guard
+  - mtr
   - figlet
   - uptimed
   - python-dev
