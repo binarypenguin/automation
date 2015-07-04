@@ -14,6 +14,7 @@
   - php5-mcrypt
   - vagrant
   - cryptsetup
+  - virt-manager
 
 - name: Apt Add Variety
   apt_repository: repo='ppa:variety/next'
