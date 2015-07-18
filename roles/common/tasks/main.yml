@@ -69,4 +69,4 @@
       accept_hostkey: true
 
 - name: Add Binary Penguin Scripts to $PATH
-  lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin" mode="0755"
+  lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin/bin" mode="0755"
