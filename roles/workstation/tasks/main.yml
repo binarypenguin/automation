@@ -14,8 +14,12 @@
   - php5-mcrypt
   - vagrant
   - cryptsetup
+<<<<<<< HEAD
   - gimp
   - seahorse
+=======
+  - virt-manager
+>>>>>>> 57e4221cd74d7fe66b61b64ebf043be4c90b2c3d
 
 - name: Apt Add Variety
   apt_repository: repo='ppa:variety/next'
