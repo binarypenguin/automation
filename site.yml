@@ -26,4 +26,5 @@
   sudo: yes
   roles:
     - workstation
+    - composer
 

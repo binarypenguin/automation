@@ -14,6 +14,8 @@
   - php5-mcrypt
   - vagrant
   - cryptsetup
+  - gimp
+  - seahorse
 
 - name: Apt Add Variety
   apt_repository: repo='ppa:variety/next'
