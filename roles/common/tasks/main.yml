@@ -19,6 +19,7 @@
   - uptimed
   - python-dev
   - python-pip
+  - realpath
 
 - name: Enable Colors in skel bashrc
   lineinfile: dest=/etc/skel/.bashrc state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
@@ -56,3 +57,16 @@
   copy: src=01-banner dest=/etc/update-motd.d owner=root group=root mode=u+rwx,g=rx,o=rx
   notify:
     - refresh motd
+
+##
+# Binary Penguin Scripts
+##
+- name: Clone Binary Penguin Scripts
+  git:
+      repo: 'https://github.com/binarypenguin/scripts.git'
+      dest: /opt/binarypenguin
+      update: yes
+      accept_hostkey: true
+
+- name: Add Binary Penguin Scripts to $PATH
+  lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin" mode="0755"
