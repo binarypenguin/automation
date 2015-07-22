@@ -18,7 +18,7 @@
   hosts: web
   sudo: yes
   roles:
-    - web
+    - web/common
 
 # Workstation Configuration
 - name: workstation configuration
@@ -26,5 +26,5 @@
   sudo: yes
   roles:
     - workstation
-    - composer
+    - tools/composer
 
