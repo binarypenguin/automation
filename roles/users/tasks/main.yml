@@ -1,5 +1,4 @@
 ---
-#
 - name: Update home directory file permissions
   file: owner="{{item.username}}" path="/home/{{item.username}}" group="{{item.username}}" state="directory"
   with_items: users

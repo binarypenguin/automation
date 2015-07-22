@@ -1,4 +1,3 @@
 ---
-
 - name: refresh motd
   shell: run-parts /etc/update-motd.d > /etc/motd

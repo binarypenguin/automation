@@ -1,6 +1,4 @@
 ---
-# This playbook contains common plays that will be run on all nodes.
-
 - name: Ensure packages are installed
   apt: pkg={{item}} state=latest
   with_items:
@@ -38,7 +36,6 @@
 
 - name: Add Second Spotify Key
   apt_key: id=D2C19886 keyserver=hkp://keyserver.ubuntu.com:80 state=present
-
 
 - name: Install Spotify
   apt: package=spotify-client state=latest force=yes
