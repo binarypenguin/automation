@@ -2,18 +2,15 @@
 - name: Ensure packages are installed
   apt: pkg={{item}} state=latest
   with_items:
+  - curl
   - php5-cli
   - php5-curl
   - php5-mcrypt
 
 - name: Install composer
-  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
-  tags: composer
-
-- name: Rename composer.phar to composer
-  shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer creates=/usr/local/bin/composer
   tags: composer
 
 - name: Make composer executable
-  shell: chmod a+x /usr/local/bin/composer
+  file: path=/usr/local/bin/composer state=file mode="u=rwx,g=rx,o=rx"
   tags: composer
