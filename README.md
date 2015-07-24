@@ -13,6 +13,7 @@ A few simple ansible roles I use on my home network and VPS's.
 * Ensure you have [Vagrant](https://www.vagrantup.com/)
 * Clone this repo
 * Run ```./bootstrap.sh``` to install the prerequisites needed.
+* Copy ```hosts.vagrant``` to ```hosts```
 * ```vagrant up``` to generate the VM
 * ```vagrant provision``` to re-provision your test VM
 * Create a pull request
