@@ -1,4 +1,11 @@
 ---
+- name: Ensure packages are installed
+  apt: pkg={{item}} state=latest
+  with_items:
+  - php5-cli
+  - php5-curl
+  - php5-mcrypt
+
 - name: Install composer
   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
   tags: composer

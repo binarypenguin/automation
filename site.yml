@@ -19,6 +19,7 @@
   sudo: yes
   roles:
     - web/common
+    - tools/composer
 
 # Workstation Configuration
 - name: workstation configuration
