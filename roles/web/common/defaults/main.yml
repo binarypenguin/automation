@@ -1,0 +1,12 @@
+---
+nginx_user: www-data
+nginx_group: www-data
+
+nginx_dir: "/etc/nginx"
+nginx_www_dir: "/srv/nginx"
+nginx_log_dir: "/var/log/nginx"
+nginx_pid: "/var/run/nginx.pid"
+
+# default site
+nginx_default_root: "{{nginx_www_dir}}/default"
+nginx_default_enable: yes
