@@ -15,6 +15,7 @@
   - gimp
   - seahorse
   - virt-manager
+  - ubuntu-restricted-extras
 
 - name: Apt Add Variety
   apt_repository: repo='ppa:variety/next'
