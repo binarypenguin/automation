@@ -1,1 +1,13 @@
-#
+server {
+{% for k, v in item.value.iteritems() %}
+        {% if k != 'name' and k != 'locations' %}
+	{{ k }} {{ v }}
+        {% elif k == 'locations' %}
+	#Locations
+        {% for l in v %}
+             location {{ l.name }} {
+	     }
+	{% endfor %}
+        {% endif %}
+{% endfor %}
+}

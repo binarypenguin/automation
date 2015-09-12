@@ -10,3 +10,8 @@ nginx_pid: "/var/run/nginx.pid"
 # default site
 nginx_default_root: "{{nginx_www_dir}}/default"
 nginx_default_enable: yes
+
+# site inventory
+nginx_sites: []
+nginx_enabled_sites: []
+nginx_disabled_sites: []
