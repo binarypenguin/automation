@@ -19,6 +19,13 @@
   - python-pip
   - realpath
 
+- name: Ensure packages are installed (On physical machines only)
+  apt: pkg={{item}} state=latest
+  with_items:
+  - smartmontools
+  - memtester
+  when: ansible_virtualization_role == "host"
+
 ##
 # bashrc
 ##
@@ -74,4 +81,3 @@
 
 - name: Add Binary Penguin Scripts to $PATH
   lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin/bin" mode="0755" create=yes
-
