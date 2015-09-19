@@ -6,6 +6,7 @@
   roles:
     - common
     - health
+    - ANXS.fail2ban
 
 # Bastions Configuration
 - name: bastion configuration
