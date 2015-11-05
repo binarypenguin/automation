@@ -19,6 +19,8 @@
   - python-pip
   - realpath
   - ncdu
+  - rpcbind
+  - nfs-common
 
 - name: Ensure packages are installed (On physical machines only)
   apt: pkg={{item}} state=latest
@@ -69,6 +71,18 @@
   copy: src=01-banner dest=/etc/update-motd.d owner=root group=root mode=u+rwx,g=rx,o=rx
   notify:
     - refresh motd
+
+##
+# NFS Share
+##
+- name: Create mount point for NFS server
+  file: path=/net state=directory
+  when: nfsroot is defined and ansible_domain == "{{ internal_domain }}"
+
+
+- name: Mount NFS share
+  mount: name=/net src={{ nfsroot }} fstype=nfs4 opts=_netdev,auto state=mounted
+  when: nfsroot is defined and ansible_domain == "{{ internal_domain }}"
 
 ##
 # Binary Penguin Scripts
