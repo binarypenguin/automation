@@ -75,14 +75,8 @@
 ##
 # NFS Share
 ##
-- name: Create mount point for NFS server
-  file: path=/net state=directory
-  when: nfsroot is defined and ansible_domain == "{{ internal_domain }}"
-
-
-- name: Mount NFS share
-  mount: name=/net src={{ nfsroot }} fstype=nfs4 opts=_netdev,auto state=mounted
-  when: nfsroot is defined and ansible_domain == "{{ internal_domain }}"
+- include: nfs.yml
+  when: nfsroot is defined and internal_domain is defined
 
 ##
 # Binary Penguin Scripts
