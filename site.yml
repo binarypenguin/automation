@@ -4,8 +4,8 @@
   hosts: all
   sudo: yes
   roles:
-    - common
     - health
+    - common
     - ANXS.fail2ban
 
 # Bastions Configuration
