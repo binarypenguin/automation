@@ -1,5 +1,2 @@
 # Localhost
 127.0.0.1       ansible_connection=local
-
-# Vagrant
-#default ansible_ssh_host=127.0.0.1 ansible_ssh_host=2200 ansible_connection=local
