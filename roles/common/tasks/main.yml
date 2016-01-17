@@ -36,14 +36,20 @@
 - name: Enable Colors in skel bashrc
   lineinfile: dest=/etc/skel/.bashrc state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
 
+#- name: Find .bashrc files
+#  raw: find /home -maxdepth 2 -type f -name ".bashrc"
+#  register: bashrc_dir
+#  tags: update-bashrc
+
 - name: Find .bashrc files
-  raw: find /home -maxdepth 2 -type f -name ".bashrc"
+  find: paths="/home" patterns=".bashrc" recurse=yes
   register: bashrc_dir
   tags: update-bashrc
 
 - name: Update .bashrc to force colored prompts
   lineinfile: dest={{ item }} state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
-  with_items: bashrc_dir.stdout_lines
+  with_items: bashrc_dir.files
+  when: bashrc_dir.matched > 0
   tags: update-bashrc
 
 ##
