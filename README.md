@@ -1,6 +1,9 @@
 # Automation
 A few simple ansible roles I use on my home network and VPS's.
 
+#Dependencies
+* Ansible 2.0
+
 #Getting Started
 * Clone this repo
 * Copy ```hosts.example``` to ```hosts```

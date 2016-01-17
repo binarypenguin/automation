@@ -2,7 +2,7 @@
 # Common Configuration
 - name: apply common configuration to all nodes
   hosts: all
-  sudo: yes
+  become: yes
   roles:
     - health
     - common
@@ -11,14 +11,14 @@
 # Bastions Configuration
 - name: bastion configuration
   hosts: bastions
-  sudo: yes
+  become: yes
   roles:
     - bastion
 
 # Web Server Configuration
 - name: web server configuration
   hosts: web
-  sudo: yes
+  become: yes
   roles:
     - web/common
     - tools/composer
@@ -26,7 +26,7 @@
 # Workstation Configuration
 - name: workstation configuration
   hosts: workstations
-  sudo: yes
+  become: yes
   roles:
     - workstation
     - tools/composer
