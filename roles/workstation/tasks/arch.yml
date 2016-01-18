@@ -1,1 +1,22 @@
 ---
+- name: Ensure packages are installed
+  pacman: pkg={{item}} state=latest update_cache=yes
+  with_items:
+  - terminator
+  - rsnapshot
+  - thunderbird
+  - shutter
+  - mangler
+  - php
+  - php-mcrypt
+  - cryptsetup
+  - gimp
+  - seahorse
+  - virt-manager
+  - variety
+  - hexchat
+
+# Install AUR packages
+#  - vagrant
+#  - spotify
+#  - google-chrome-stable
