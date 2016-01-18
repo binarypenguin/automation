@@ -1,33 +1,12 @@
 ---
-- name: Ensure packages are installed
-  apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
-  with_items:
-  - cowsay
-  - fortune
-  - git
-  - ssh
-  - htop
-  - sshfs
-  - iotop
-  - iftop
-  - screen
-  - molly-guard
-  - mtr
-  - figlet
-  - uptimed
-  - python-dev
-  - python-pip
-  - realpath
-  - ncdu
-  - rpcbind
-  - nfs-common
+# OS Family Check
+- include: debian.yml
+  when: ansible_os_family == 'Debian'
+  tags: package
 
-- name: Ensure packages are installed (On physical machines only)
-  apt: pkg={{item}} state=latest
-  with_items:
-  - smartmontools
-  - memtester
-  when: ansible_virtualization_role == "host"
+- include: arch.yml
+  when: ansible_os_family == 'Archlinux'
+  tags: package
 
 ##
 # bashrc
@@ -45,6 +24,7 @@
 
 # Install thefuck python package.
 - pip: name=thefuck
+  tags: update-bashrc
 
 # Alias fuck to thefuck
 - name: Add fuck as alias to thefuck in .bashrc
@@ -54,23 +34,11 @@
   tags: update-bashrc
 
 ##
-# MOTD
-##
-- name: Remove help text from MOTD
-  file: path=/etc/update-motd.d/10-help-text state=absent
-  notify:
-    - refresh motd
-
-- name: Add ASCII art banner to MOTD
-  copy: src=01-banner dest=/etc/update-motd.d owner=root group=root mode=u+rwx,g=rx,o=rx
-  notify:
-    - refresh motd
-
-##
 # NFS Share
 ##
 - include: nfs.yml
   when: nfsroot is defined and internal_domain is defined
+  tags: nfs
 
 ##
 # Binary Penguin Scripts

@@ -4,7 +4,7 @@
   local_action:
     module: slack
     token: "{{ slack_token }}"
-    username: "{{ inventory_hostname }}"
+    username: "{{ ansible_fqdn }}"
     parse: full
     msg: "{{ slack_admin|default('@everyone') }} : I am experiencing high ram utilization ({{ ((1 - ansible_memory_mb.nocache.free / ansible_memtotal_mb) * 100)|round }}% used)"
   when: ((1 - ansible_memory_mb.nocache.free / ansible_memtotal_mb) * 100)|round > 90
@@ -14,7 +14,7 @@
   local_action:
     module: slack
     token: "{{ slack_token }}"
-    username: "{{ inventory_hostname }}"
+    username: "{{ ansible_fqdn }}"
     parse: full
     msg: "{{ slack_admin|default('@everyone') }} : I am experiencing high swap utilization ({{ ((1 - ansible_swapfree_mb / ansible_swaptotal_mb) * 100)|round }}% used)."
   when: ansible_swaptotal_mb > 0 and ((1 - ansible_swapfree_mb / ansible_swaptotal_mb) * 100)|round > 90
@@ -24,9 +24,9 @@
   local_action:
     module: slack
     token: "{{ slack_token }}"
-    username: "{{ inventory_hostname }}"
+    username: "{{ ansible_fqdn }}"
     parse: full
     msg: "{{ slack_admin|default('@everyone') }} : {{ item.mount }} is at {{ ((1 - item.size_available / item.size_total) * 100)|round }}% used!"
-  when: ((1 - item.size_available / item.size_total) * 100)|round > 90
+  when: item.size_total > 0 and ((1 - item.size_available / item.size_total) * 100)|round > 90
   with_items: ansible_mounts
   tags: health

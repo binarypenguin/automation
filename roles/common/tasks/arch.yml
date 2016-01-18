@@ -1,0 +1,43 @@
+---
+- name: Ensure packages are installed
+  pacman: pkg={{item}} state=latest update_cache=yes
+  with_items:
+  - cowsay
+  - fortune-mod
+  - git
+  - ssh
+  - htop
+  - sshfs
+  - iotop
+  - iftop
+  - screen
+  - mtr
+  - figlet
+  - uptimed
+  - python-pip
+  - ncdu
+  - rpcbind
+  - nfs-utils
+
+#- name: Install AUR packages
+#  - molly-guard
+
+- name: Ensure packages are installed (On physical machines only)
+  pacman: pkg={{item}} state=latest
+  with_items:
+  - smartmontools
+  #- memtester
+  when: ansible_virtualization_role == "host"
+
+##
+# MOTD
+##
+# - name: Remove help text from MOTD
+#   file: path=/etc/update-motd.d/10-help-text state=absent
+#   notify:
+#     - refresh motd
+#
+# - name: Add ASCII art banner to MOTD
+#   copy: src=01-banner dest=/etc/update-motd.d owner=root group=root mode=u+rwx,g=rx,o=rx
+#   notify:
+#     - refresh motd
