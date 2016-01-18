@@ -2,20 +2,20 @@
 - name: Ensure packages are installed
   apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
   with_items:
-  - terminator
-  - rsnapshot
-  - thunderbird
-  - shutter
+  - cryptsetup
+  - gimp
   - mangler
   - php5-cli
   - php5-curl
   - php5-mcrypt
-  - vagrant
-  - cryptsetup
-  - gimp
+  - rsnapshot
   - seahorse
-  - virt-manager
+  - shutter
+  - terminator
+  - thunderbird
   - ubuntu-restricted-extras
+  - vagrant
+  - virt-manager
 
 - name: Apt Add Variety
   apt_repository: repo='ppa:variety/next'

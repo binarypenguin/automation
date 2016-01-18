@@ -3,21 +3,22 @@
   pacman: pkg={{item}} state=present
   with_items:
   - cowsay
+  - figlet
   - fortune-mod
   - git
-  - openssh
   - htop
-  - sshfs
-  - iotop
   - iftop
-  - screen
+  - iotop
   - mtr
-  - figlet
-  - uptimed
-  - python-pip
   - ncdu
-  - rpcbind
   - nfs-utils
+  - openssh
+  - python-pip
+  - rpcbind
+  - screen
+  - sshfs
+  - tree
+  - uptimed
 
 #- name: Install AUR packages
 #  - molly-guard

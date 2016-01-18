@@ -3,24 +3,24 @@
   apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
   with_items:
   - cowsay
+  - figlet
   - fortune
   - git
-  - ssh
   - htop
-  - sshfs
-  - iotop
   - iftop
-  - screen
+  - iotop
   - molly-guard
   - mtr
-  - figlet
-  - uptimed
+  - ncdu
+  - nfs-common
   - python-dev
   - python-pip
   - realpath
-  - ncdu
   - rpcbind
-  - nfs-common
+  - screen
+  - ssh
+  - sshfs
+  - uptimed
 
 - name: Ensure packages are installed (On physical machines only)
   apt: pkg={{item}} state=latest
