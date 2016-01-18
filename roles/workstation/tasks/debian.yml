@@ -1,0 +1,57 @@
+---
+- name: Ensure packages are installed
+  apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
+  with_items:
+  - terminator
+  - rsnapshot
+  - thunderbird
+  - shutter
+  - mangler
+  - php5-cli
+  - php5-curl
+  - php5-mcrypt
+  - vagrant
+  - cryptsetup
+  - gimp
+  - seahorse
+  - virt-manager
+  - ubuntu-restricted-extras
+
+- name: Apt Add Variety
+  apt_repository: repo='ppa:variety/next'
+
+- name: Install Variety
+  apt: package=variety state=latest
+
+- name: Apt Add HexChat stable
+  apt_repository: repo='ppa:gwendal-lebihan-dev/hexchat-stable'
+
+- name: Install Hexchat Stable
+  apt: package=hexchat state=latest
+
+- name: Apt Add Scudcloud
+  apt_repository: repo='ppa:rael-gc/scudcloud'
+
+- name: Install Scudcloud
+  apt: package=scudcloud state=latest
+ 
+- name: Apt Add Spotify
+  apt_repository: repo='deb http://repository.spotify.com stable non-free' state=present
+
+- name: Add Spotify Key
+  apt_key: id=94558F59 keyserver=hkp://keyserver.ubuntu.com:80 state=present
+
+- name: Add Second Spotify Key
+  apt_key: id=D2C19886 keyserver=hkp://keyserver.ubuntu.com:80 state=present
+
+- name: Install Spotify
+  apt: package=spotify-client state=latest force=yes
+
+- name: Add Google Key
+  apt_key: url=https://dl-ssl.google.com/linux/linux_signing_key.pub state=present
+
+- name: Add Google Chrome repo
+  apt_repository: repo='deb http://dl.google.com/linux/chrome/deb/ stable main' state=present
+
+- name: Install Google Chrome Stable
+  apt: package=google-chrome-stable state=latest
