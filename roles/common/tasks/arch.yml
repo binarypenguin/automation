@@ -1,11 +1,11 @@
 ---
 - name: Ensure packages are installed
-  pacman: pkg={{item}} state=latest update_cache=yes
+  pacman: pkg={{item}} state=present
   with_items:
   - cowsay
   - fortune-mod
   - git
-  - ssh
+  - openssh
   - htop
   - sshfs
   - iotop
