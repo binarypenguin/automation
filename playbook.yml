@@ -15,7 +15,7 @@
   roles:
     - health
     - common
-    - ANXS.fail2ban
+    - { role: ANXS.fail2ban, when: ansible_os_family == 'Debian' }
 
 # Bastions Configuration
 - name: bastion configuration
