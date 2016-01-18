@@ -29,12 +29,6 @@
 - name: Install Hexchat Stable
   apt: package=hexchat state=latest
 
-- name: Apt Add Scudcloud
-  apt_repository: repo='ppa:rael-gc/scudcloud'
-
-- name: Install Scudcloud
-  apt: package=scudcloud state=latest
- 
 - name: Apt Add Spotify
   apt_repository: repo='deb http://repository.spotify.com stable non-free' state=present
 
