@@ -1,2 +1,4 @@
 hosts
 .vagrant
+group_vars/
+*.facts

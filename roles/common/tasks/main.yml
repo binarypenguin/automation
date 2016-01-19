@@ -1,66 +1,44 @@
 ---
-- name: Ensure packages are installed
-  apt: pkg={{item}} state=latest update_cache=yes
-  with_items:
-  - cowsay
-  - fortune
-  - git
-  - ssh
-  - htop
-  - sshfs
-  - iotop
-  - iftop
-  - screen
-  - molly-guard
-  - mtr
-  - figlet
-  - uptimed
-  - python-dev
-  - python-pip
-  - realpath
+# OS Family Check
+- include: debian.yml
+  when: ansible_os_family == 'Debian'
+  tags: package
+
+- include: arch.yml
+  when: ansible_os_family == 'Archlinux'
+  tags: package
 
 ##
 # bashrc
 ##
-
-- name: Enable Colors in skel bashrc
-  lineinfile: dest=/etc/skel/.bashrc state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
-
 - name: Find .bashrc files
-  raw: find /home -maxdepth 2 -type f -name ".bashrc"
+  find: paths="/home,/etc/skel" patterns=".bashrc" recurse=yes hidden=True
   register: bashrc_dir
   tags: update-bashrc
 
 - name: Update .bashrc to force colored prompts
-  lineinfile: dest={{ item }} state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
-  with_items: bashrc_dir.stdout_lines
+  lineinfile: dest={{ item.path }} state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
+  with_items: bashrc_dir.files
+  when: bashrc_dir.matched > 0
   tags: update-bashrc
-
-##
-# The Fuck
-##
 
 # Install thefuck python package.
 - pip: name=thefuck
+  tags: update-bashrc
 
 # Alias fuck to thefuck
 - name: Add fuck as alias to thefuck in .bashrc
-  lineinfile: dest={{ item }} line="alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
-  with_items: bashrc_dir.stdout_lines
+  lineinfile: dest={{ item.path }} line="alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
+  with_items: bashrc_dir.files
+  when: bashrc_dir.matched > 0
   tags: update-bashrc
 
 ##
-# MOTD
+# NFS Share
 ##
-- name: Remove help text from MOTD
-  file: path=/etc/update-motd.d/10-help-text state=absent
-  notify:
-    - refresh motd
-
-- name: Add ASCII art banner to MOTD
-  copy: src=01-banner dest=/etc/update-motd.d owner=root group=root mode=u+rwx,g=rx,o=rx
-  notify:
-    - refresh motd
+- include: nfs.yml
+  when: nfsroot is defined and internal_domain is defined
+  tags: nfs
 
 ##
 # Binary Penguin Scripts
@@ -74,4 +52,3 @@
 
 - name: Add Binary Penguin Scripts to $PATH
   lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin/bin" mode="0755" create=yes
-

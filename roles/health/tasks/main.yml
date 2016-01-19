@@ -1,0 +1,35 @@
+#This role reports hosts that are in poor health to a slack channel
+---
+- name: Check for high memory usage
+  local_action:
+    module: slack
+    token: "{{ slack_token }}"
+    channel: "{{ slack_channel }}"
+    username: "{{ ansible_fqdn }}"
+    parse: full
+    msg: "{{ slack_admin|default('@everyone') }} : I am experiencing high ram utilization ({{ ((1 - ansible_memory_mb.nocache.free / ansible_memtotal_mb) * 100)|round }}% used)"
+  when: slack_token is defined and ((1 - ansible_memory_mb.nocache.free / ansible_memtotal_mb) * 100)|round > 90
+  tags: health
+
+- name: Check for high swap usage
+  local_action:
+    module: slack
+    token: "{{ slack_token }}"
+    channel: "{{ slack_channel }}"
+    username: "{{ ansible_fqdn }}"
+    parse: full
+    msg: "{{ slack_admin|default('@everyone') }} : I am experiencing high swap utilization ({{ ((1 - ansible_swapfree_mb / ansible_swaptotal_mb) * 100)|round }}% used)."
+  when: slack_token is defined and ansible_swaptotal_mb > 0 and ((1 - ansible_swapfree_mb / ansible_swaptotal_mb) * 100)|round > 90
+  tags: health
+
+- name: Check for low disk space
+  local_action:
+    module: slack
+    token: "{{ slack_token }}"
+    channel: "{{ slack_channel }}"
+    username: "{{ ansible_fqdn }}"
+    parse: full
+    msg: "{{ slack_admin|default('@everyone') }} : {{ item.mount }} is at {{ ((1 - item.size_available / item.size_total) * 100)|round }}% used!"
+  when: slack_token is defined and item.size_total > 0 and ((1 - item.size_available / item.size_total) * 100)|round > 90
+  with_items: ansible_mounts
+  tags: health

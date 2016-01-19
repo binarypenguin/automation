@@ -13,7 +13,6 @@ Vagrant.configure(2) do |config|
     ansible.sudo = true
     ansible.verbose = "v"
     ansible.host_key_checking = false
-    ansible.playbook = "site.yml"
-    ansible.inventory_path = "./hosts"
+    ansible.playbook = "playbook.yml"
   end
 end

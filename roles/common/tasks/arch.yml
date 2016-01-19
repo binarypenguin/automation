@@ -1,0 +1,37 @@
+---
+- name: Ensure packages are installed
+  pacman: pkg={{item}} state=present
+  with_items:
+  - cowsay
+  - figlet
+  - fortune-mod
+  - git
+  - htop
+  - iftop
+  - iotop
+  - mtr
+  - ncdu
+  - nfs-utils
+  - openssh
+  - python-pip
+  - rpcbind
+  - screen
+  - sshfs
+  - tree
+  - uptimed
+
+#- name: Install AUR packages
+#  - molly-guard
+
+- name: Ensure packages are installed (On physical machines only)
+  pacman: pkg={{item}} state=latest
+  with_items:
+  - smartmontools
+  #- memtester
+  when: ansible_virtualization_role == "host"
+
+##
+# MOTD
+##
+- name: Add ASCII art banner to MOTD
+  shell: echo -e "\e[0;32m$(figlet $(hostname))\e[0m" > /etc/motd
