@@ -4,6 +4,7 @@
   local_action:
     module: slack
     token: "{{ slack_token }}"
+    channel: "{{ slack_channel }}"
     username: "{{ ansible_fqdn }}"
     parse: full
     msg: "{{ slack_admin|default('@everyone') }} : I am experiencing high ram utilization ({{ ((1 - ansible_memory_mb.nocache.free / ansible_memtotal_mb) * 100)|round }}% used)"
@@ -14,6 +15,7 @@
   local_action:
     module: slack
     token: "{{ slack_token }}"
+    channel: "{{ slack_channel }}"
     username: "{{ ansible_fqdn }}"
     parse: full
     msg: "{{ slack_admin|default('@everyone') }} : I am experiencing high swap utilization ({{ ((1 - ansible_swapfree_mb / ansible_swaptotal_mb) * 100)|round }}% used)."
@@ -24,6 +26,7 @@
   local_action:
     module: slack
     token: "{{ slack_token }}"
+    channel: "{{ slack_channel }}"
     username: "{{ ansible_fqdn }}"
     parse: full
     msg: "{{ slack_admin|default('@everyone') }} : {{ item.mount }} is at {{ ((1 - item.size_available / item.size_total) * 100)|round }}% used!"
