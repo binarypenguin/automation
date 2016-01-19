@@ -8,19 +8,6 @@
   when: ansible_os_family == 'Archlinux'
   tags: package
 
-##
-# bashrc
-##
-- name: Find .bashrc files
-  find: paths="/home,/etc/skel" patterns=".bashrc" recurse=yes hidden=True
-  register: bashrc_dir
-  tags: update-bashrc
-
-- name: Update .bashrc to force colored prompts
-  lineinfile: dest={{ item.path }} state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
-  with_items: bashrc_dir.files
-  when: bashrc_dir.matched > 0
-  tags: update-bashrc
 
 # Install thefuck python package.
 - pip: name=thefuck

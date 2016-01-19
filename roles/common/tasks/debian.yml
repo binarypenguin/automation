@@ -45,3 +45,10 @@
   notify:
     - refresh motd
   tags: motd
+
+##
+# Preferences
+##
+- name: Enable Colored Prompts
+  lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export force_color_prompt=yes" mode="0755" create=yes
+  tags: binary-penguin-preferences
