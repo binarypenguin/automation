@@ -24,14 +24,14 @@
 
 # Install thefuck python package.
 - pip: name=thefuck
-  tags: update-bashrc
+  tags: thefuck
 
 # Alias fuck to thefuck
 - name: Add fuck as alias to thefuck in .bashrc
   lineinfile: dest={{ item.path }} line="alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
   with_items: bashrc_dir.files
   when: bashrc_dir.matched > 0
-  tags: update-bashrc
+  tags: thefuck
 
 ##
 # NFS Share
@@ -49,6 +49,8 @@
       dest: /opt/binarypenguin
       update: yes
       accept_hostkey: true
+  tags: binary-penguin-scripts
 
 - name: Add Binary Penguin Scripts to $PATH
   lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin/bin" mode="0755" create=yes
+  tags: binary-penguin-scripts

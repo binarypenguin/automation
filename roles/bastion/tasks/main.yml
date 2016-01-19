@@ -2,6 +2,9 @@
 # Allow everything and enable UFW
 - name: Enable UFW
   ufw: state=enabled policy=deny logging=on
+  tags:
+  - ufw
+  - bastion
 
 # ufw supports connection rate limiting, which is useful for protecting
 # against brute-force login attacks. ufw will deny connections if an IP
@@ -10,4 +13,7 @@
 # for details. Typical usage is:
 - name: Limit SSH Access
   ufw: rule=limit port=ssh proto=tcp
+  tags:
+  - ufw
+  - bastion
 

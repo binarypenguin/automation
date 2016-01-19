@@ -21,6 +21,7 @@
   - ssh
   - sshfs
   - uptimed
+  tags: package
 
 - name: Ensure packages are installed (On physical machines only)
   apt: pkg={{item}} state=latest
@@ -28,6 +29,7 @@
   - smartmontools
   - memtester
   when: ansible_virtualization_role == "host"
+  tags: package
 
 ##
 # MOTD
@@ -36,8 +38,10 @@
   file: path=/etc/update-motd.d/10-help-text state=absent
   notify:
     - refresh motd
+  tags: motd
 
 - name: Add ASCII art banner to MOTD
   copy: src=01-banner dest=/etc/update-motd.d owner=root group=root mode=u+rwx,g=rx,o=rx
   notify:
     - refresh motd
+  tags: motd

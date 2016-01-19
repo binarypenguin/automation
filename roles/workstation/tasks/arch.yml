@@ -15,6 +15,7 @@
   - thunderbird
   - variety
   - virt-manager
+  tags: package
 
 # Install AUR packages
 #  - vagrant
