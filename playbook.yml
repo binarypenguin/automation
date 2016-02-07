@@ -16,8 +16,6 @@
     - health
     - common
     - { role: ANXS.fail2ban, when: ansible_os_family == 'Debian' }
-  vars:
-    ansible_python_interpreter: python2
 
 # Bastions Configuration
 - name: bastion configuration
@@ -25,8 +23,6 @@
   become: yes
   roles:
     - bastion
-  vars:
-    ansible_python_interpreter: python2
 
 # Web Server Configuration
 - name: web server configuration
@@ -35,8 +31,6 @@
   roles:
     - web/common
     - tools/composer
-  vars:
-    ansible_python_interpreter: python2
 
 # Workstation Configuration
 - name: workstation configuration
@@ -45,6 +39,4 @@
   roles:
     - workstation
     - tools/composer
-  vars:
-    ansible_python_interpreter: python2
 

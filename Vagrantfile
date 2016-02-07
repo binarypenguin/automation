@@ -13,16 +13,22 @@ Vagrant.configure(2) do |config|
       ansible.verbose = "v"
       ansible.host_key_checking = false
       ansible.playbook = "playbook.yml"
+      ansible.extra_vars = {
+        ansible_python_interpreter: "/usr/bin/python"
+      }
     end
   end
 
   config.vm.define "fedora" do |fedora|
     fedora.vm.box = "fedora/23-cloud-base"
-
+    fedora.vm.provision "shell", inline: "dnf install -y python2 python2-dnf libselinux-python"
     fedora.vm.provision "ansible" do |ansible|
       ansible.verbose = "v"
       ansible.host_key_checking = false
       ansible.playbook = "playbook.yml"
+      ansible.extra_vars = {
+        ansible_python_interpreter: "/usr/bin/python2"
+      }
     end
   end
 
@@ -33,6 +39,9 @@ Vagrant.configure(2) do |config|
       ansible.verbose = "v"
       ansible.host_key_checking = false
       ansible.playbook = "playbook.yml"
+      ansible.extra_vars = {
+        ansible_python_interpreter: "/usr/bin/python2"
+      }
     end
   end
 end
