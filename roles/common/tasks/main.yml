@@ -8,6 +8,13 @@
   when: ansible_os_family == 'Archlinux'
   tags: package
 
+- include: fedora.yml
+  when: ansible_os_family == 'RedHat'
+  tags: package
+
+# Update PIP
+- pip: name=pip state=latest
+  tags: pip
 
 # Install thefuck python package.
 - pip: name=thefuck
