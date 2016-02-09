@@ -17,7 +17,7 @@
   tags: pip
 
 # Install thefuck python package.
-- pip: name=thefuck
+- pip: name=thefuck state=latest
   tags: thefuck
 
 # Creates file for aliasing fuck to thefuck
