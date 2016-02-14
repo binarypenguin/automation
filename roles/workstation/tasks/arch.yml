@@ -2,6 +2,7 @@
 - name: Ensure packages are installed
   pacman: pkg={{item}} state=latest update_cache=yes
   with_items:
+  - bind-tools
   - cryptsetup
   - gimp
   - hexchat
