@@ -1,6 +1,6 @@
 ---
 - name: Ensure packages are installed
-  pacman: pkg={{item}} state=present
+  dnf: name={{item}} state=present
   with_items:
   - cowsay
   - figlet
@@ -14,21 +14,21 @@
   - nfs-utils
   - openssh
   - python-pip
+  - python-devel
+  - python2-psutil
   - rpcbind
   - screen
-  - sshfs
+  - fuse-sshfs
   - tree
   - uptimed
+  - gcc
   tags: package
 
-#- name: Install AUR packages
-#  - molly-guard
-
 - name: Ensure packages are installed (On physical machines only)
-  pacman: pkg={{item}} state=latest
+  dnf: name={{item}} state=latest
   with_items:
   - smartmontools
-  #- memtester
+  - memtester
   when: ansible_virtualization_role == "host"
   tags: package
 

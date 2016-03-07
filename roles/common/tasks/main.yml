@@ -8,30 +8,22 @@
   when: ansible_os_family == 'Archlinux'
   tags: package
 
-##
-# bashrc
-##
-- name: Find .bashrc files
-  find: paths="/home,/etc/skel" patterns=".bashrc" recurse=yes hidden=True
-  register: bashrc_dir
-  tags: update-bashrc
+- include: fedora.yml
+  when: ansible_os_family == 'RedHat'
+  tags: package
 
-- name: Update .bashrc to force colored prompts
-  lineinfile: dest={{ item.path }} state=present regexp="^#?force_color_prompt" line="force_color_prompt=yes"
-  with_items: bashrc_dir.files
-  when: bashrc_dir.matched > 0
-  tags: update-bashrc
+# Update PIP
+- pip: name=pip state=latest
+  tags: pip
 
 # Install thefuck python package.
-- pip: name=thefuck
-  tags: update-bashrc
+- pip: name=thefuck state=latest
+  tags: thefuck
 
-# Alias fuck to thefuck
-- name: Add fuck as alias to thefuck in .bashrc
-  lineinfile: dest={{ item.path }} line="alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
-  with_items: bashrc_dir.files
-  when: bashrc_dir.matched > 0
-  tags: update-bashrc
+# Creates file for aliasing fuck to thefuck
+- name: Add fuck as alias to thefuck in /etc/profile.d/thefuck.sh
+  lineinfile: dest=/etc/profile.d/thefuck.sh line="alias fuck='eval $(thefuck $(fc -ln -1)); history -r'" mode="0755" create=yes
+  tags: thefuck
 
 ##
 # NFS Share
@@ -49,6 +41,8 @@
       dest: /opt/binarypenguin
       update: yes
       accept_hostkey: true
+  tags: binary-penguin-scripts
 
 - name: Add Binary Penguin Scripts to $PATH
   lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin/bin" mode="0755" create=yes
+  tags: binary-penguin-scripts

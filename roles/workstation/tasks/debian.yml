@@ -16,36 +16,49 @@
   - ubuntu-restricted-extras
   - vagrant
   - virt-manager
+  tags: package
 
 - name: Apt Add Variety
   apt_repository: repo='ppa:variety/next'
+  tags: package
 
 - name: Install Variety
   apt: package=variety state=latest
+  tags: package
 
 - name: Apt Add HexChat stable
   apt_repository: repo='ppa:gwendal-lebihan-dev/hexchat-stable'
+  tags: package
 
 - name: Install Hexchat Stable
   apt: package=hexchat state=latest
+  tags: package
 
 - name: Apt Add Spotify
   apt_repository: repo='deb http://repository.spotify.com stable non-free' state=present
+  tags: package
 
 - name: Add Spotify Key
   apt_key: id=94558F59 keyserver=hkp://keyserver.ubuntu.com:80 state=present
+  tags: package
 
 - name: Add Second Spotify Key
   apt_key: id=D2C19886 keyserver=hkp://keyserver.ubuntu.com:80 state=present
+  tags: package
 
 - name: Install Spotify
   apt: package=spotify-client state=latest force=yes
+  tags: package
 
 - name: Add Google Key
   apt_key: url=https://dl-ssl.google.com/linux/linux_signing_key.pub state=present
+  tags: package
 
 - name: Add Google Chrome repo
   apt_repository: repo='deb http://dl.google.com/linux/chrome/deb/ stable main' state=present
+  tags: package
 
 - name: Install Google Chrome Stable
   apt: package=google-chrome-stable state=latest
+  tags: package
+
