@@ -5,26 +5,29 @@
   - nginx  
 
 - name: Create nginx root directory
-  file: path=/srv/nginx state=directory mode=0755 owner=www-data group=www-data
-
-- name: Create SSL storage directory
-  file: path=/etc/nginx/ssl state=directory mode="u=rwX,g=rX,o-rwx" owner=root group=root
+  file: path=/srv/nginx state=directory mode=0755 owner=root group=root
 
 - name: Clone System
   git: repo=https://github.com/binarypenguin/system.git dest=/srv/nginx/system
 
-- name: Create Sites
-  template:
-   src: site.j2
-   dest: "{{nginx_dir}}/sites-available/{{item.value.name}}"
-  with_dict: nginx_sites
+- name: Create Team Group
+  group: name="www-{{item.name}}"
+  with_items: teams
+  when: teams is defined
 
-- name: Create Virtual Directories
+- name: Create Team System Account
+  user: name="www-{{item.name}}" group="www-{{item.name}}" system=yes append=yes
+  with_items: teams
+  when: teams is defined
+
+- name: Create Team Virtual Directories
   file:
-    path: "{{nginx_www_dir}}/{{item.server.name}}"
+    path: "{{nginx_www_dir}}/{{item.0.name}}/{{item.1.domainname}}"
     state: directory
-    owner: "{{nginx_user}}"
-    group: "{{nginx_group}}"
+    owner: "www-{{item.0.name}}"
+    group: "www-{{item.0.name}}"
     mode: 0755
-  with_items: nginx_sites
-
+  with_subelements:
+    - teams
+    - sites
+  when: teams is defined

@@ -29,7 +29,7 @@
   hosts: web
   become: yes
   roles:
-    - web/common
+    - { role: web/common, tags: ['web'] }
     - tools/composer
 
 # Workstation Configuration
