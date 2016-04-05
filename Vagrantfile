@@ -7,7 +7,7 @@ Vagrant.configure(2) do |config|
   # https://docs.vagrantup.com.
 
   config.vm.define "ubuntu" do |ubuntu|
-    ubuntu.vm.box = "ubuntu/trusty64"
+    ubuntu.vm.box = "ubuntu/xenial64"
 
     ubuntu.vm.provision "ansible" do |ansible|
       ansible.verbose = "v"
