@@ -21,19 +21,19 @@ Vagrant.configure(2) do |config|
     end
   end
 
-  config.vm.define "ubuntu14" do |ubuntu14|
-    ubuntu14.vm.box = "ubuntu/trusty64"
-    ubuntu14.vm.hostname = "ubuntu16"
-
-    ubuntu14.vm.provision "ansible" do |ansible|
-      ansible.verbose = "v"
-      ansible.host_key_checking = false
-      ansible.playbook = "playbook.yml"
-      ansible.extra_vars = {
-        ansible_python_interpreter: "/usr/bin/python"
-      }
-    end
-  end
+#  config.vm.define "ubuntu14" do |ubuntu14|
+#    ubuntu14.vm.box = "ubuntu/trusty64"
+#    ubuntu14.vm.hostname = "ubuntu16"
+#
+#    ubuntu14.vm.provision "ansible" do |ansible|
+#      ansible.verbose = "v"
+#      ansible.host_key_checking = false
+#      ansible.playbook = "playbook.yml"
+#      ansible.extra_vars = {
+#        ansible_python_interpreter: "/usr/bin/python"
+#      }
+#    end
+#  end
 
   config.vm.define "fedora" do |fedora|
     fedora.vm.box = "fedora/23-cloud-base"
