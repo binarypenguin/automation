@@ -26,6 +26,12 @@
   apt: package=variety state=latest
   tags: package
 
+- name: Create Variety Group
+  group: name=variety state=present
+
+- name: Create global pics folder for lightdm
+  file: path=/var/cache/variety owner=root group=variety state=directory mode=2777
+
 - name: Apt Add HexChat stable
   apt_repository: repo='ppa:gwendal-lebihan-dev/hexchat-stable'
   tags: package
