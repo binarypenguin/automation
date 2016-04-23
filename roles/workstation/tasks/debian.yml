@@ -68,3 +68,5 @@
   apt: package=google-chrome-stable state=latest
   tags: package
 
+- name: Disable guest mode in Ubuntu
+  copy: src=lightdm/50-no-guest.conf dest=/usr/share/lightdm/lightdm.conf.d/50-no-guest.conf owner=root group=root mode=0644
