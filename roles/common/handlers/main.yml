@@ -1,3 +1,6 @@
 ---
 - name: refresh motd
   shell: run-parts /etc/update-motd.d > /etc/motd
+
+- name: restart sshd
+  service: name=ssh state=restarted
