@@ -16,6 +16,10 @@
 - pip: name=pip state=latest
   tags: pip
 
+# Install setuptools python package.
+- pip: name=setuptools state=latest
+  tags: pip
+
 # Install thefuck python package.
 - pip: name=thefuck state=latest
   tags: thefuck

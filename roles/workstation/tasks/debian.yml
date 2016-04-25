@@ -5,9 +5,9 @@
   - cryptsetup
   - gimp
   - mangler
-  - php5-cli
-  - php5-curl
-  - php5-mcrypt
+  - php-cli
+  - php-curl
+  - php-mcrypt
   - rsnapshot
   - seahorse
   - shutter
@@ -25,6 +25,12 @@
 - name: Install Variety
   apt: package=variety state=latest
   tags: package
+
+- name: Create Variety Group
+  group: name=variety state=present
+
+- name: Create global pics folder for lightdm
+  file: path=/var/cache/variety owner=root group=variety state=directory mode=2777
 
 - name: Apt Add HexChat stable
   apt_repository: repo='ppa:gwendal-lebihan-dev/hexchat-stable'
@@ -62,3 +68,5 @@
   apt: package=google-chrome-stable state=latest
   tags: package
 
+- name: Disable guest mode in Ubuntu
+  copy: src=lightdm/50-no-guest.conf dest=/usr/share/lightdm/lightdm.conf.d/50-no-guest.conf owner=root group=root mode=0644
