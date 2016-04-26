@@ -16,6 +16,10 @@
 - pip: name=pip state=latest
   tags: pip
 
+# Install setuptools python package.
+- pip: name=setuptools state=latest
+  tags: pip
+
 # Install thefuck python package.
 - pip: name=thefuck state=latest
   tags: thefuck
@@ -31,6 +35,18 @@
 - include: nfs.yml
   when: nfsroot is defined and internal_domain is defined
   tags: nfs
+
+##
+# SSH Hardening
+##
+- name: Deploy SSH Config
+  template: src=../files/sshd_config.j2
+      dest=/etc/ssh/sshd_config
+      backup=yes
+      owner=0 group=0 mode=0644
+      validate='/usr/sbin/sshd -T -f %s'
+  notify:
+    - restart sshd
 
 ##
 # Binary Penguin Scripts
