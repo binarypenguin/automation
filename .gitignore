@@ -3,3 +3,4 @@ hosts
 group_vars/
 *.facts
 *.retry
+*.log

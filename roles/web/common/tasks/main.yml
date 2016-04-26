@@ -7,8 +7,9 @@
 - name: Create nginx root directory
   file: path=/srv/nginx state=directory mode=0755 owner=root group=root
 
-- name: Clone System
-  git: repo=https://github.com/binarypenguin/system.git dest=/srv/nginx/system
+
+- name: Setup systemwide pages
+  include: system.yml
 
 - name: Create Team Group
   group: name="www-{{item.name}}"
