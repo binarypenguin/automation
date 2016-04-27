@@ -2,7 +2,7 @@
 - name: Ensure packages are installed
   apt: pkg={{item}} state=latest update_cache=yes
   with_items:
-  - nginx  
+  - nginx
   - php-fpm
 
 - name: Create nginx root directory
@@ -15,65 +15,8 @@
 
 - name: Setup systemwide pages
   include: system.yml
-
-- name: Create Team Group
-  group:
-    name="www-{{item.name}}"
-    system=yes
-    state=present
+  
+- name: Setup each team
+  include: team.yml
   with_items: "{{ teams + system_teams }}"
   when: teams is defined
-
-- name: Create Team System Account
-  user:
-    name="www-{{item.name}}"
-    group="www-{{item.name}}"
-    system=yes append=yes
-    home="{{nginx_www_dir}}/{{item.name}}"
-    state=present
-  with_items: "{{ teams + system_teams }}"
-  when: teams is defined
-
-- name: Create Team Virtual Directories
-  file:
-    path: "{{nginx_www_dir}}/{{item.0.name}}/{{item.1.domainname}}"
-    state: directory
-    owner: "www-{{item.0.name}}"
-    group: "www-{{item.0.name}}"
-    mode: 0755
-  with_subelements:
-    - "{{ teams + system_teams }}"
-    - sites
-  when: teams is defined
-
-- name: Create new php-fpm pool for each Team
-  template: src=../files/www.conf.j2 dest=/etc/php/7.0/fpm/pool.d/www-{{item.name}}.conf owner=root group=root mode=0644
-  with_items: "{{ teams + system_teams }}"
-  when: teams is defined
-  notify: Reload php-fpm
-
-- name: Create available virtual hosts
-  template:
-    src: ../files/vhost.j2
-    dest: "/etc/nginx/sites-available/{{item.0.name}}-{{item.1.domainname}}"
-    owner: root
-    group: root
-    mode: 0644
-  with_subelements:
-    - "{{ teams + system_teams }}"
-    - sites
-  when: teams is defined
-
-- name: Enable virtual hosts
-  file:
-    src: "/etc/nginx/sites-available/{{item.0.name}}-{{item.1.domainname}}"
-    dest: "/etc/nginx/sites-enabled/{{item.0.name}}-{{item.1.domainname}}"
-    owner: root
-    group: root
-    mode: 0644
-    state: link
-  with_subelements:
-    - "{{ teams + system_teams }}"
-    - sites
-  when: teams is defined
-  notify: Reload nginx

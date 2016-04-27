@@ -1,34 +1,49 @@
-# Last generated: {{ template_run_date }}
-# Team:           {{ item.0.name }}
-# Domain:         {{ item.1.domainname }}
-# User:           www-{{ item.0.name }}
-# Group:          www-{{ item.0.name }}
+# Managed by Ansible: {{ item.managed|default(True) }}
+# Last generated:     {{ template_run_date }}
+# Team:               {{ team.name }}
+# Domain:             {{ item.domainname }}
+# User:               www-{{ team.name }}
+# Group:              www-{{ team.name }}
+{%- set system_pages = item.system_pages|default(True) %}
+{%- set clean_urls = item.clean_urls|default(False) %}
 
 server {
   listen 80;
-  server_name   {{ item.1.domainname }};
+  server_name   {{ item.domainname }};
 
   client_max_body_size 2M;
 
-  {% if item.0.type is defined %}
-    root       /srv/nginx/{{ item.0.name }}/{{ item.1.domainname }}/public/;
-  {% else %}
-    root       /srv/nginx/{{ item.0.name }}/{{ item.1.domainname }}/;    
+  {% if item.type is defined -%}
+    {%- if item.type == "jekyll" -%}
+      root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/_site/;
+    {%- elif item.type == "laravel" -%}
+      {%- set system_pages = False -%}
+      root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/public/;
+    {%- else -%}
+      root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/public/;
+    {%- endif -%}
+  {%- else -%}
+    root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/;
+  {%- endif %}
+
+
+  {% if system_pages == True -%}
+  #Disable by setting system_pages to false
+  include /etc/nginx/system.conf;
   {% endif %}
 
-#  include /etc/nginx/global-errors.conf;
-
   location / {
-        #try_files $uri $uri/ /index.php$is_args$args;
-        index index.html index.htm index.php;
+    {% if item.type == "laravel" or clean_urls == True -%}
+      try_files $uri $uri/ /index.php$is_args$args;
+    {% endif -%}
+    index index.html index.htm index.php;
   }
 
   location ~ [^/]\.php(/|$) {
     fastcgi_split_path_info ^(.+?\.php)(/.*)$;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_pass unix:/run/php/php7.0-fpm.www-{{ item.0.name }}.sock;
+    fastcgi_pass unix:/run/php/php7.0-fpm.www-{{ team.name }}.sock;
     fastcgi_index index.php;
     include fastcgi_params;
   }
 }
-

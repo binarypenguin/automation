@@ -5,11 +5,19 @@
   - nginx
   - jekyll
 
-# Contains network wide error pages
+# Contains network wide resources and error pages
 - name: Clone binarypenguin.net
   git: repo=https://github.com/binarypenguin/binarypenguin.net.git dest=/srv/nginx/binarypenguin/binarypenguin.net
 
 - name: Generate Site
   shell: jekyll build
   args:
-      chdir: /srv/nginx/binarypenguin.net
+      chdir: /srv/nginx/binarypenguin/binarypenguin.net
+
+- name: System page config
+  template:
+    src: ../files/system.conf
+    dest: /etc/nginx/system.conf
+    owner: root
+    group: root
+    mode: 0644
