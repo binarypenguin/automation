@@ -11,7 +11,11 @@ nginx_pid: "/var/run/nginx.pid"
 nginx_default_root: "{{nginx_www_dir}}/default"
 nginx_default_enable: yes
 
-# site inventory
-nginx_sites: []
-nginx_enabled_sites: []
-nginx_disabled_sites: []
+# system teams
+system_teams:
+  - name: binarypenguin
+    sites:
+      - domainname: binarypenguin.net
+        ssl_port: 443
+        type: jekyll
+

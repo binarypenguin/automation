@@ -5,12 +5,9 @@
   - nginx
   - jekyll
 
-- name: Create binarypenguin.net directory
-  file: path=/srv/nginx/binarypenguin.net state=directory mode=0755 owner=root group=root
-
 # Contains network wide error pages
 - name: Clone binarypenguin.net
-  git: repo=https://github.com/binarypenguin/binarypenguin.net.git dest=/srv/nginx/binarypenguin.net
+  git: repo=https://github.com/binarypenguin/binarypenguin.net.git dest=/srv/nginx/binarypenguin/binarypenguin.net
 
 - name: Generate Site
   shell: jekyll build

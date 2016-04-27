@@ -1,0 +1,34 @@
+# Last generated: {{ template_run_date }}
+# Team:           {{ item.0.name }}
+# Domain:         {{ item.1.domainname }}
+# User:           www-{{ item.0.name }}
+# Group:          www-{{ item.0.name }}
+
+server {
+  listen 80;
+  server_name   {{ item.1.domainname }};
+
+  client_max_body_size 2M;
+
+  {% if item.0.type is defined %}
+    root       /srv/nginx/{{ item.0.name }}/{{ item.1.domainname }}/public/;
+  {% else %}
+    root       /srv/nginx/{{ item.0.name }}/{{ item.1.domainname }}/;    
+  {% endif %}
+
+#  include /etc/nginx/global-errors.conf;
+
+  location / {
+        #try_files $uri $uri/ /index.php$is_args$args;
+        index index.html index.htm index.php;
+  }
+
+  location ~ [^/]\.php(/|$) {
+    fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass unix:/run/php/php7.0-fpm.www-{{ item.0.name }}.sock;
+    fastcgi_index index.php;
+    include fastcgi_params;
+  }
+}
+
