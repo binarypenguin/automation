@@ -57,5 +57,19 @@
     state: link
   with_items: "{{ sites }}"
 
+- name: Pull website repos
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{nginx_www_dir}}/{{team.name}}/{{item.domainname}}"
+  when: item.repo is defined
+  with_items: "{{ sites }}"
+
+- name: Compile the Jekylls
+  shell: jekyll build
+  args:
+    chdir: "{{nginx_www_dir}}/{{team.name}}/{{item.domainname}}"
+  when: item.type == "jekyll"
+  with_items: "{{ sites }}"
+
 - name: Reload nginx
   service: name=nginx state=reloaded
