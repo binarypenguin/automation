@@ -7,16 +7,19 @@ Vagrant.configure(2) do |config|
   # https://docs.vagrantup.com.
 
   config.vm.define "ubuntu16" do |ubuntu|
-    ubuntu16.vm.box = "ubuntu/xenial64"
-    ubuntu16.vm.hostname = "ubuntu16"
+    ubuntu.vm.box = "ubuntu/xenial64"
+    ubuntu.vm.hostname = "ubuntu16"
 
-    ubuntu16.vm.provision "shell", inline: "apt-get install -y python2.7 hostname"
-    ubuntu16.vm.provision "ansible" do |ansible|
+    ubuntu.vm.provision "shell", inline: "apt-get install -y python2.7 hostname"
+    ubuntu.vm.provision "ansible" do |ansible|
       ansible.verbose = "v"
       ansible.host_key_checking = false
       ansible.playbook = "playbook.yml"
+      ansible.groups = {
+          "web" => ["ubuntu16"]
+      }
       ansible.extra_vars = {
-        ansible_python_interpreter: "/usr/bin/python2"
+        ansible_python_interpreter: "/usr/bin/python2.7"
       }
     end
   end

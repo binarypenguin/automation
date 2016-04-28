@@ -1,3 +1,23 @@
 ---
-- name: Clone System
-  git: repo=https://github.com/binarypenguin/system.git dest=/srv/nginx/system
+- name: Ensure packages are installed
+  apt: pkg={{item}} state=latest update_cache=yes
+  with_items:
+  - nginx
+  - php-fpm
+  - jekyll
+
+- name: Create nginx root directory
+  file: path=/srv/nginx state=directory mode=0755 owner=root group=root
+
+- name: Disable default virtual host
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Setup systemwide pages
+  include: system.yml
+
+- name: Setup each team
+  include: team.yml
+  with_items: "{{ teams + system_teams }}"
+  when: teams is defined

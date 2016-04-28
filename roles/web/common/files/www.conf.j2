@@ -1,0 +1,21 @@
+; Last generated: {{ template_run_date }}
+; Team:           {{ item.name }}
+; User:           www-{{ item.name }}
+
+[www-{{ item.name }}]
+user = www-{{ item.name }}
+group = www-{{ item.name }}
+
+listen = /run/php/php7.0-fpm.www-{{item.name}}.sock
+
+listen.owner = www-{{ item.name }}
+listen.group = www-data
+listen.mode = 0660
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+security.limit_extensions = .php .php3 .php4 .php5 .php7

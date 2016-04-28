@@ -1,0 +1,8 @@
+---
+- name: System page config
+  template:
+    src: ../files/system.conf
+    dest: /etc/nginx/system.conf
+    owner: root
+    group: root
+    mode: 0644

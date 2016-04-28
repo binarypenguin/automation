@@ -1,0 +1,112 @@
+# Managed by Ansible: {{ item.managed|default(True) }}
+# Last generated:     {{ template_run_date }}
+# Team:               {{ team.name }}
+# Domain:             {{ item.domainname }}
+# User:               www-{{ team.name }}
+# Group:              www-{{ team.name }}
+{%- set system_pages = item.system_pages|default(True) %}
+{%- set clean_urls = item.clean_urls|default(False) %}
+
+server {
+  listen 80;
+  server_name   {{ item.domainname }};
+
+  client_max_body_size 2M;
+
+  {% if item.type is defined -%}
+    {%- if item.type == "jekyll" -%}
+      root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/_site/;
+    {%- elif item.type == "laravel" -%}
+      {%- set system_pages = False -%}
+      root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/public/;
+    {%- elif item.type == "drupal" -%}
+      {%- set system_pages = False -%}
+      root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/;
+    {%- else -%}
+      root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/;
+    {%- endif -%}
+  {%- else -%}
+    root       /srv/nginx/{{ team.name }}/{{ item.domainname }}/;
+  {%- endif %}
+
+
+  {% if system_pages == True -%}
+  #Disable by setting system_pages to false
+  include /etc/nginx/system.conf;
+  {% endif %}
+
+  location / {
+    {% if item.type == "laravel" or clean_urls == True -%}
+      try_files $uri $uri/ /index.php$is_args$args;
+    {% endif -%}
+    index index.html index.htm index.php;
+  }
+
+  location ~ [^/]\.php(/|$) {
+    fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass unix:/run/php/php7.0-fpm.www-{{ team.name }}.sock;
+    fastcgi_index index.php;
+    include fastcgi_params;
+  }
+
+  location = /favicon.ico {
+      log_not_found off;
+      access_log off;
+  }
+
+  location = /robots.txt {
+      allow all;
+      log_not_found off;
+      access_log off;
+  }
+
+  {% if item.type == "drupal" %}
+  # Very rarely should these ever be accessed outside of your lan
+  location ~* \.(txt|log)$ {
+      deny all;
+  }
+
+  location ~ \..*/.*\.php$ {
+      return 403;
+  }
+
+  location ~ ^/sites/.*/private/ {
+      return 403;
+  }
+
+  # Allow "Well-Known URIs" as per RFC 5785
+  location ~* ^/.well-known/ {
+      allow all;
+  }
+
+  # Block access to "hidden" files and directories whose names begin with a
+  # period. This includes directories used by version control systems such
+  # as Subversion or Git to store control files.
+  location ~ (^|/)\. {
+      return 403;
+  }
+
+  location @rewrite {
+      rewrite ^/(.*)$ /index.php?q=$1;
+  }
+
+  # Don't allow direct access to PHP files in the vendor directory.
+  location ~ /vendor/.*\.php$ {
+      deny all;
+      return 404;
+  }
+
+  # Fighting with Styles? This little gem is amazing.
+  # location ~ ^/sites/.*/files/imagecache/ { # For Drupal <= 6
+  location ~ ^/sites/.*/files/styles/ { # For Drupal >= 7
+      try_files $uri @rewrite;
+  }
+
+  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+      expires max;
+      log_not_found off;
+  }
+
+  {% endif %}
+}
