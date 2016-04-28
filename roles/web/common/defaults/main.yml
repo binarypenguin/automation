@@ -1,17 +1,17 @@
 ---
-nginx_user: www-data
-nginx_group: www-data
-
+# Override these defaults in your host_vars or group_vars directory.
 nginx_dir: "/etc/nginx"
 nginx_www_dir: "/srv/nginx"
 nginx_log_dir: "/var/log/nginx"
 nginx_pid: "/var/run/nginx.pid"
 
-# default site
-nginx_default_root: "{{nginx_www_dir}}/default"
-nginx_default_enable: yes
+# For now we will set this here. It must be a Jekyll site. There is a
+# bug with nested includes that is preventing this from being defined in the
+# team dictionary: https://github.com/ansible/ansible/issues/14146
+system_default_team: binarypenguin
+system_default_site: binarypenguin.net
 
-# system teams
+# System teams. Same format as the Teams array. Gets merged at run time.
 system_teams:
   - name: binarypenguin
     sites:

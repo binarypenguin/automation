@@ -1,0 +1,22 @@
+---
+# There are also variables that can be overridden here see roles/web/common/defaults/main.yml
+teams:
+  # Define your team. Use lowercase letters and dashes only
+  - name: yourteamname
+    sites:
+      #Define each site
+      - domainname: domain.example
+        # We will assume SSL everywhere if you set a cert and redirect from port 80
+        ssl_cert: /etc/letsencrypt/live/domain.example/fullchain.pem;
+        ssl_cert_key: /etc/letsencrypt/live/domain.example/privkey.pem;
+        # Options: php, laravel, jekyll, drupal
+        type: laravel
+      - domainname: website.example
+        type: php
+        managed: False
+        system_pages: False
+      - domainname: drupal.example
+        type: drupal
+      - domainname: jekyll.example
+        type: jekyll
+        repo: https://github.com/example/jekyll_website.git

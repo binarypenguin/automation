@@ -1,19 +1,4 @@
 ---
-- name: Ensure packages are installed
-  apt: pkg={{item}} state=latest
-  with_items:
-  - nginx
-  - jekyll
-
-# Contains network wide resources and error pages
-- name: Clone binarypenguin.net
-  git: repo=https://github.com/binarypenguin/binarypenguin.net.git dest=/srv/nginx/binarypenguin/binarypenguin.net
-
-- name: Generate Site
-  shell: jekyll build
-  args:
-      chdir: /srv/nginx/binarypenguin/binarypenguin.net
-
 - name: System page config
   template:
     src: ../files/system.conf
