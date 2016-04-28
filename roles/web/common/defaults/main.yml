@@ -16,6 +16,5 @@ system_teams:
   - name: binarypenguin
     sites:
       - domainname: binarypenguin.net
-        ssl_port: 443
         type: jekyll
         repo: https://github.com/binarypenguin/binarypenguin.net.git
