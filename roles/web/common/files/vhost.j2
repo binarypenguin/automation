@@ -61,7 +61,7 @@ server {
       access_log off;
   }
 
-  {% if item.type == "drupal" %}
+  {% if item.type == "drupal" -%}
   # Very rarely should these ever be accessed outside of your lan
   location ~* \.(txt|log)$ {
       deny all;
@@ -109,4 +109,5 @@ server {
   }
 
   {% endif %}
+
 }
