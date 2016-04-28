@@ -8,9 +8,19 @@
 {%- set clean_urls = item.clean_urls|default(False) %}
 
 server {
-  listen 80;
-  server_name   {{ item.domainname }};
+  {% if 'ssl_cert' in item and 'ssl_cert_key' in item -%}
+  listen {{ item.port|default(443) }} ssl;
+  keepalive_timeout   70;
 
+  add_header Strict-Transport-Security “max-age=31536000”;
+
+  ssl_certificate         {{ item.ssl_cert }};
+  ssl_certificate_key     {{ item.ssl_cert_key }};
+  {% else -%}
+  listen {{ item.port|default(80) }};
+  {%- endif %}
+
+  server_name   {{ item.domainname }};
   client_max_body_size 2M;
 
   {% if item.type is defined -%}

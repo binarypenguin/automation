@@ -17,6 +17,8 @@ teams:
         system_pages: False
       - domainname: drupal.example
         type: drupal
+        # You can change from the default port on any vhost
+        port: 8080
       - domainname: jekyll.example
         type: jekyll
         repo: https://github.com/example/jekyll_website.git
