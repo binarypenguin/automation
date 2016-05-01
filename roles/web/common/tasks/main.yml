@@ -19,5 +19,5 @@
 
 - name: Setup each team
   include: team.yml
-  with_items: "{{ teams + system_teams }}"
+  with_items: "{{ teams|default([]) + system_teams }}"
   when: teams is defined
