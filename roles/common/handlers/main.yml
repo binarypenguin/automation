@@ -1,6 +1,6 @@
 ---
 - name: refresh motd
-  shell: run-parts /etc/update-motd.d > /etc/motd
+  shell: run-parts --lsbsysinit /etc/update-motd.d > /var/run/motd.dynamic
 
 - name: restart sshd
   service: name=ssh state=restarted
