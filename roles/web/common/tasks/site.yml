@@ -1,3 +1,19 @@
+- name:  Set site facts
+  set_fact:
+    system_pages: True
+    webroot: /srv/nginx/{{ team.name }}/{{ site.domainname }}/
+
+- name: When Laravel
+  set_fact:
+    webroot: /srv/nginx/{{ team.name }}/{{ site.domainname }}/public
+    system_pages: False
+  when: site.type == "laravel"
+
+- name: When Jekyll
+  set_fact:
+    webroot: /srv/nginx/{{ team.name }}/{{ site.domainname }}/_site
+  when: site.type == "jekyll"
+
 - name: Create site virtual directory
   file:
     path: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
@@ -8,7 +24,7 @@
 
 - name: Create available virtual hosts
   template:
-    src: ../files/vhost.j2
+    src: ../templates/vhost.j2
     dest: "/etc/nginx/sites-available/{{team.name}}-{{site.domainname}}"
     owner: root
     group: root

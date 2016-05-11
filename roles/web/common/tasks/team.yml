@@ -1,4 +1,3 @@
-
 - name: Set team facts
   set_fact:
     team: "{{ item }}"
@@ -21,7 +20,7 @@
 
 - name: Create new php-fpm pool for team
   template:
-    src: ../files/www.conf.j2
+    src: ../templates/www.conf.j2
     dest: /etc/php/7.0/fpm/pool.d/www-{{team.name}}.conf
     owner: root
     group: root
