@@ -1,0 +1,37 @@
+- name: Create site virtual directory
+  file:
+    path: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
+    state: directory
+    owner: "www-{{team.name}}"
+    group: "www-{{team.name}}"
+    mode: 0755
+
+- name: Create available virtual hosts
+  template:
+    src: ../files/vhost.j2
+    dest: "/etc/nginx/sites-available/{{team.name}}-{{site.domainname}}"
+    owner: root
+    group: root
+    mode: 0644
+    force: "{{ site.managed|default(True) }}"
+
+- name: Enable virtual hosts
+  file:
+    src: "/etc/nginx/sites-available/{{team.name}}-{{site.domainname}}"
+    dest: "/etc/nginx/sites-enabled/{{team.name}}-{{site.domainname}}"
+    owner: root
+    group: root
+    mode: 0644
+    state: link
+
+- name: Pull website repos
+  git:
+    repo: "{{ site.repo }}"
+    dest: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
+  when: site.repo is defined
+
+- name: Compile the Jekylls
+  shell: jekyll build
+  args:
+    chdir: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
+  when: site.type == "jekyll"

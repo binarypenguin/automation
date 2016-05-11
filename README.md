@@ -2,7 +2,7 @@
 A few simple ansible roles I use on my home network and VPS's.
 
 #Dependencies
-* Ansible 2.0
+* Ansible =< 2.2
 
 #Getting Started
 * [Install Ansible](http://docs.ansible.com/ansible/intro_installation.html#latest-releases-via-apt-ubuntu)

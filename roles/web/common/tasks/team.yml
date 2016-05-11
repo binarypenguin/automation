@@ -28,48 +28,11 @@
     mode: 0644
   notify: Reload php-fpm
 
-- name: Create site virtual directory
-  file:
-    path: "{{nginx_www_dir}}/{{team.name}}/{{item.domainname}}"
-    state: directory
-    owner: "www-{{team.name}}"
-    group: "www-{{team.name}}"
-    mode: 0755
+- name: Create sites
+  include: site.yml
   with_items: "{{ sites }}"
-
-- name: Create available virtual hosts
-  template:
-    src: ../files/vhost.j2
-    dest: "/etc/nginx/sites-available/{{team.name}}-{{item.domainname}}"
-    owner: root
-    group: root
-    mode: 0644
-    force: "{{ item.managed|default(True) }}"
-  with_items: "{{ sites }}"
-
-- name: Enable virtual hosts
-  file:
-    src: "/etc/nginx/sites-available/{{team.name}}-{{item.domainname}}"
-    dest: "/etc/nginx/sites-enabled/{{team.name}}-{{item.domainname}}"
-    owner: root
-    group: root
-    mode: 0644
-    state: link
-  with_items: "{{ sites }}"
-
-- name: Pull website repos
-  git:
-    repo: "{{ item.repo }}"
-    dest: "{{nginx_www_dir}}/{{team.name}}/{{item.domainname}}"
-  when: item.repo is defined
-  with_items: "{{ sites }}"
-
-- name: Compile the Jekylls
-  shell: jekyll build
-  args:
-    chdir: "{{nginx_www_dir}}/{{team.name}}/{{item.domainname}}"
-  when: item.type == "jekyll"
-  with_items: "{{ sites }}"
+  loop_control:
+    loop_var: site
 
 - name: Reload nginx
   service: name=nginx state=reloaded
