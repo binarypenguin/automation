@@ -32,6 +32,13 @@
     - { role: web/common, tags: ['web'] }
     - tools/composer
 
+# Database Server Configuration
+- name: database server configuration
+  hosts: database
+  become: yes
+  roles:
+    - { role: database, tags: ['database'] }
+
 # Workstation Configuration
 - name: workstation configuration
   hosts: workstations

@@ -1,0 +1,6 @@
+---
+- name: Ensure packages are installed
+  apt: pkg={{item}} state=latest update_cache=yes
+  with_items:
+  - mariadb-server
+  - python-mysqldb

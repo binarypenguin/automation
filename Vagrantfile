@@ -6,17 +6,35 @@ Vagrant.configure(2) do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
-  config.vm.define "ubuntu16" do |ubuntu|
-    ubuntu.vm.box = "ubuntu/xenial64"
-    ubuntu.vm.hostname = "ubuntu16"
+  config.vm.define "ubuntu16web" do |ubuntuweb|
+    ubuntuweb.vm.box = "ubuntu/xenial64"
+    ubuntuweb.vm.hostname = "ubuntu16web"
 
-    ubuntu.vm.provision "shell", inline: "apt-get install -y python2.7 hostname"
-    ubuntu.vm.provision "ansible" do |ansible|
+    ubuntuweb.vm.provision "shell", inline: "apt-get install -y python2.7 hostname"
+    ubuntuweb.vm.provision "ansible" do |ansible|
       ansible.verbose = "v"
       ansible.host_key_checking = false
       ansible.playbook = "playbook.yml"
       ansible.groups = {
-          "web" => ["ubuntu16"]
+          "web" => ["ubuntu16web"]
+      }
+      ansible.extra_vars = {
+        ansible_python_interpreter: "/usr/bin/python2.7"
+      }
+    end
+  end
+
+  config.vm.define "ubuntu16db" do |ubuntudb|
+    ubuntudb.vm.box = "ubuntu/xenial64"
+    ubuntudb.vm.hostname = "ubuntu16db"
+
+    ubuntudb.vm.provision "shell", inline: "apt-get install -y python2.7 hostname"
+    ubuntudb.vm.provision "ansible" do |ansible|
+      ansible.verbose = "v"
+      ansible.host_key_checking = false
+      ansible.playbook = "playbook.yml"
+      ansible.groups = {
+          "database" => ["ubuntu16db"]
       }
       ansible.extra_vars = {
         ansible_python_interpreter: "/usr/bin/python2.7"
