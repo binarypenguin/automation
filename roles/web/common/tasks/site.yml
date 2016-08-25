@@ -44,6 +44,7 @@
   git:
     repo: "{{ site.repo }}"
     dest: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
+    version: {{ site.version|default("HEAD") }}
   when: site.repo is defined
 
 - name: Compile the Jekylls
