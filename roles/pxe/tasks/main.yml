@@ -1,0 +1,33 @@
+---
+- name: Ensure packages are installed
+  apt: pkg={{item}} state=latest update_cache=yes
+  with_items:
+  - tftpd-hpa
+  - inetutils-inetd
+
+- name: Create boot menu
+  template:
+    src: ../templates/menu/{{ system.image }}.j2
+    dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ system.mac | regex_replace(':','-') }}"
+    owner: root
+    group: root
+    mode: 0644
+    force: True
+  with_items: "{{ systems }}"
+  loop_control:
+    loop_var: system
+
+- name: Create preseed folder
+  file: path=/srv/nginx/automation.int.binarypenguin.net/public/preseed/build/ state=directory mode=0655
+
+- name: Generate preseed
+  template:
+    src: ../templates/preseed/{{ system.image }}.j2
+    dest: "/srv/nginx/automation.int.binarypenguin.net/public/preseed/build/{{ system.name }}.{{ system.domain }}.preseed"
+    owner: root
+    group: root
+    mode: 0644
+    force: True
+  with_items: "{{ systems }}"
+  loop_control:
+    loop_var: system

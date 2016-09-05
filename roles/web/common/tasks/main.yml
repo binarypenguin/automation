@@ -5,6 +5,8 @@
   - nginx
   - php-fpm
   - jekyll
+  - python-mysqldb
+  - mariadb-client
 
 - name: Create nginx root directory
   file: path=/srv/nginx state=directory mode=0755 owner=root group=root

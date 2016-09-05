@@ -14,12 +14,6 @@ A few simple ansible roles I use on my home network and VPS's.
 * ```ansible-galaxy install -r requirements.txt``` to install third party modules.
 * Run ```./provision.sh``` to provision your hosts :)
 
-#Testing
-* Ensure you have [Vagrant](https://www.vagrantup.com/)
-* ```ansible-galaxy install -r requirements.txt``` to install third party modules.
-* ```vagrant up``` to generate the VM
-* After, you can ```vagrant provision``` to re-provision your test VM
-
 #Roles
 ## Common
 Installs a few common utilities on each machine.

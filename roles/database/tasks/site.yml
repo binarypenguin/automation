@@ -1,2 +1,0 @@
-- name: Create site database
-  mysql_db: name={{team.name}}-{{site.domainname}} state=present

@@ -31,6 +31,13 @@
   roles:
     - { role: database, tags: ['database'] }
 
+# PXE Server Configuration
+- name: pxe server configuration
+  hosts: pxe
+  become: yes
+  roles:
+    - { role: pxe, tags: ['pxe'] }
+
 # Web Server Configuration
 - name: web server configuration
   hosts: web

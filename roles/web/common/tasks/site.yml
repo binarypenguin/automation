@@ -14,6 +14,13 @@
     webroot: /srv/nginx/{{ team.name }}/{{ site.domainname }}/_site
   when: site.type == "jekyll"
 
+- name: Create site database
+  mysql_db:
+    name: "{{ team.name }}-{{ site.domainname | replace('.','_') }}"
+    login_host: "{{ site.db_server }}"
+    state: present
+  when: site.db_server is defined and site.db_server | ipaddr
+
 - name: Create site virtual directory
   file:
     path: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"

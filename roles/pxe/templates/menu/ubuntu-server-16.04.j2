@@ -1,0 +1,12 @@
+#{{ system.name }}.{{ system.domain }}
+path ubuntu-installer/amd64/boot-screens/
+default ubuntu-installer/amd64/boot-screens/vesamenu.c32
+
+timeout 300
+ONTIMEOUT build
+
+label build
+  menu label ^Build!
+  kernel ubuntu-installer/amd64/linux
+  append auto=true vga=788 hostname={{ system.name }} domain={{ system.domain }} initrd=ubuntu-installer/amd64/initrd.gz netcfg/choose_interface=auto preseed/url="http://automation.int.binarypenguin.net/preseed/build/{{ system.name }}.{{ system.domain }}.preseed" console-keymaps-at/keymap=us
+  menu default
