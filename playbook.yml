@@ -54,3 +54,10 @@
     - workstation
     - tools/composer
 
+# ZNC Bouncer
+- name: znc bouncer configuration
+  hosts: znc
+  become: yes
+  roles:
+    - znc
+

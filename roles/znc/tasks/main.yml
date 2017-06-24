@@ -1,0 +1,25 @@
+---
+
+- name: Install ZNC
+  apt_repository:
+    repo: 'ppa:teward/znc'
+    state: present
+    update_cache: yes
+
+- name: Install ZNC
+  apt: pkg={{item}} state=latest update_cache=yes
+  with_items:
+  - znc
+  - znc-dbg
+  - znc-dev
+  - znc-perl
+  - znc-python
+  - znc-tcl
+
+- name: Create ZNC User
+  user:
+    name: znc
+    comment: "ZNC Bouncer"
+    createhome: yes
+    home: /opt/znc
+    system: yes
