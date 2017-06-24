@@ -23,3 +23,12 @@
     createhome: yes
     home: /opt/znc
     system: yes
+
+- name: Create ZNC Service
+  copy:
+    src: znc.service
+    dest: /etc/systemd/system/znc.service
+    owner: root
+    group: root
+    mode: 0644
+
