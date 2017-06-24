@@ -4,6 +4,7 @@
   with_items:
   - nginx
   - php-fpm
+  - php7.0-simplexml
   - jekyll
   - python-mysqldb
   - mariadb-client

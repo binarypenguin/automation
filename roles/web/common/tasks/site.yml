@@ -1,3 +1,6 @@
+- debug:
+    msg: "Site: {{ site.domainname }}"
+
 - name:  Set site facts
   set_fact:
     system_pages: True
@@ -59,3 +62,11 @@
   args:
     chdir: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
   when: site.type == "jekyll"
+
+- name: Update Folder Permissions
+  file:
+    path: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
+    owner: "www-{{team.name}}"
+    group: "www-{{team.name}}"
+    mode: u=rwX,g=rwX,o=rX
+    recurse: yes
