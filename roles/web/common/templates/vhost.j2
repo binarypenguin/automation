@@ -13,7 +13,7 @@ server {
 
 
 server {
-  {% if 'ssl_cert' in item and 'ssl_cert_key' in item -%}
+  {% if 'ssl_cert' in site and 'ssl_cert_key' in site -%}
   listen {{ site.port|default(443) }} ssl;
   keepalive_timeout   70;
 
