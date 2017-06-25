@@ -1,4 +1,10 @@
 ---
+- name: Apt Add Lets Encrypt
+  apt_repository:
+    repo: 'ppa:certbot/certbot'
+    state: present
+    update_cache: yes
+
 - name: Ensure packages are installed
   apt: pkg={{item}} state=latest update_cache=yes
   with_items:
@@ -8,6 +14,7 @@
   - jekyll
   - python-mysqldb
   - mariadb-client
+  - python-certbot-nginx
 
 - name: Create nginx root directory
   file: path=/srv/nginx state=directory mode=0755 owner=root group=root

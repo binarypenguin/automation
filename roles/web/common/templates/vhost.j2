@@ -7,6 +7,12 @@
 {%- set clean_urls = site.clean_urls|default(False) %}
 
 server {
+    server_name www.{{ site.domainname }};
+    return 301 $scheme://{{ site.domainname }}$request_uri;
+}
+
+
+server {
   {% if 'ssl_cert' in item and 'ssl_cert_key' in item -%}
   listen {{ site.port|default(443) }} ssl;
   keepalive_timeout   70;
