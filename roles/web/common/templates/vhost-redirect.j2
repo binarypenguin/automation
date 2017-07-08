@@ -1,0 +1,34 @@
+# Managed by Ansible: {{ site.managed|default(True) }}
+# Last generated:     {{ template_run_date }}
+# Team:               {{ team.name }}
+# Domain:             {{ site.domainname }}
+# User:               www-{{ team.name }}
+# Group:              www-{{ team.name }}
+{%- set clean_urls = site.clean_urls|default(False) %}
+
+server {
+    listen 80;
+    server_name {{ site.domainname }};
+    return 302 http://{{ site.to }}$request_uri;
+}
+
+{% if 'ssl_cert' in site and 'ssl_cert_key' in site -%}
+server {
+  {% if 'ssl_cert' in site and 'ssl_cert_key' in site -%}
+  listen {{ site.port|default(443) }} ssl;
+  keepalive_timeout   70;
+
+  add_header Strict-Transport-Security “max-age=31536000”;
+
+  ssl_certificate         {{ site.ssl_cert }};
+  ssl_certificate_key     {{ site.ssl_cert_key }};
+  {% else -%}
+  listen {{ site.port|default(80) }};
+  {%- endif %}
+
+  server_name   {{ site.domainname }};
+  client_max_body_size 2M;
+  return 302 https://{{ site.to }}$request_uri;
+
+}
+{% endif%}

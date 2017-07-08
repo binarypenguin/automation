@@ -31,6 +31,7 @@
     owner: "www-{{team.name}}"
     group: "www-{{team.name}}"
     mode: 0755
+  when: site.type != "redirect"
 
 - name: Create available virtual hosts
   template:
@@ -40,6 +41,17 @@
     group: root
     mode: 0644
     force: "{{ site.managed|default(True) }}"
+  when: site.type != "redirect"
+
+- name: Create available virtual hosts redirect
+  template:
+    src: ../templates/vhost-redirect.j2
+    dest: "/etc/nginx/sites-available/{{team.name}}-{{site.domainname}}"
+    owner: root
+    group: root
+    mode: 0644
+    force: "{{ site.managed|default(True) }}"
+  when: site.type == "redirect"
 
 - name: Enable virtual hosts
   file:
@@ -70,3 +82,4 @@
     group: "www-{{team.name}}"
     mode: u=rwX,g=rwX,o=rX
     recurse: yes
+  when: site.type != "redirect"
