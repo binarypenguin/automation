@@ -11,6 +11,13 @@ server {
     return 301 $scheme://{{ site.domainname }}$request_uri;
 }
 
+{% if 'ssl_cert' in site and 'ssl_cert_key' in site -%}
+server {
+    listen 80;
+    server_name {{ site.domainname }};
+    return 302 https://{{ site.domainname }}$request_uri;
+}
+{% endif%}
 
 server {
   {% if 'ssl_cert' in site and 'ssl_cert_key' in site -%}
