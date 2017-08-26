@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible-playbook playbook.yml --inventory-file=hosts --become --ask-vault-pass $@
+ansible-playbook playbook.yml -i production --become --ask-vault-pass $@
