@@ -1,6 +1,27 @@
 ---
+##
+# Update System
+##
+- name: Update System Package Cache
+  apt:
+    update_cache=yes
+    cache_valid_time=3600
+  tags: update_system
+
+- name: Upgrade System Packages
+  apt:
+    upgrade=full
+  tags: update_system
+
+- name: Autoremove unneeded Kernels
+  shell: apt autoremove --purge -y
+  tags: update_system
+
+##
+# Install Packages
+##
 - name: Ensure packages are installed
-  apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
+  apt: pkg={{item}} state=latest
   with_items:
   - cowsay
   - figlet
