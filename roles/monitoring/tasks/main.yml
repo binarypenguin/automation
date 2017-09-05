@@ -1,0 +1,88 @@
+---
+- stat:
+    path: /usr/sbin/netdata
+  register: netdata_binary
+
+- block:
+  - name: Ensure packages are installed
+    apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
+    with_items:
+      - zlib1g-dev
+      - uuid-dev
+      - libmnl-dev
+      - gcc
+      - make
+      - git
+      - autoconf
+      - autoconf-archive
+      - autogen
+      - automake
+      - pkg-config
+      - curl
+    when: ansible_os_family == 'Debian'
+
+  - name: Ensure packages are installed
+    dnf: name={{item}} state=latest
+    with_items:
+      - zlib-devel
+      - libuuid-devel
+      - libmnl-devel
+      - gcc
+      - make
+      - git
+      - autoconf
+      - autoconf-archive
+      - autogen
+      - automake
+      - pkgconfig
+      - curl
+      - findutils
+    when: ansible_os_family == 'RedHat'
+
+  - name: Create staging area to download installer
+    tempfile:
+      state: directory
+      suffix: netdata
+    register: netdata_tmp
+
+  #git clone https://github.com/firehol/netdata.git --depth=1
+  - name: Clone the netdata repo
+    git:
+      repo: https://github.com/firehol/netdata.git
+      depth: 1
+      dest: "{{ netdata_tmp.path }}"
+
+  - name: Install Netdata
+    command: ./netdata-installer.sh --dont-wait chdir="{{ netdata_tmp.path }}" creates=/usr/sbin/netdata
+  #when: netdata_binary.stat.exists == False
+
+
+- name: Enable Registry mode
+  ini_file:
+    path: /etc/netdata/netdata.conf
+    backup: yes
+    section: registry
+    option: enabled
+    value: "yes"
+  when: netdata_registry_registry_to_announce is defined and ansible_fqdn == netdata_registry_registry_to_announce
+  notify: Reload netdata
+
+- name: Disable Registry mode
+  ini_file:
+    path: /etc/netdata/netdata.conf
+    backup: yes
+    section: registry
+    option: enabled
+    value: "no"
+  when: netdata_registry_registry_to_announce is defined and ansible_fqdn != netdata_registry_registry_to_announce
+  notify: Reload netdata
+
+- name: Set Registry
+  ini_file:
+    path: /etc/netdata/netdata.conf
+    backup: yes
+    section: registry
+    option: registry to announce
+    value: "http://{{ netdata_registry_registry_to_announce }}:{{ netdata_registry_port | default('19999') }}"
+  when: netdata_registry_registry_to_announce is defined
+  notify: Reload netdata

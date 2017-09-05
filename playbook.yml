@@ -15,6 +15,7 @@
   roles:
     - health
     - common
+    - { role: monitoring, tags: monitoring }
 #    - { role: ANXS.fail2ban, when: ansible_os_family == 'Debian' }
 
 # Bastions Configuration
