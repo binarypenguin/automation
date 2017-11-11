@@ -6,7 +6,11 @@
     update_cache: yes
 
 - name: Ensure packages are installed
-  apt: pkg={{item}} state=latest update_cache=yes
+  apt:
+    pkg={{item}}
+    force_apt_get=yes
+    update_cache=yes
+    state=latest
   with_items:
   - nginx
   - php-fpm
