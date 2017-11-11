@@ -1,14 +1,14 @@
 ---
 # OS Family Check
-- include: debian.yml
+- include_tasks: debian.yml
   when: ansible_os_family == 'Debian'
   tags: package
 
-- include: arch.yml
+- include_tasks: arch.yml
   when: ansible_os_family == 'Archlinux'
   tags: package
 
-- include: fedora.yml
+- include_tasks: fedora.yml
   when: ansible_os_family == 'RedHat'
   tags: package
 
@@ -32,7 +32,7 @@
 ##
 # NFS Share
 ##
-- include: nfs.yml
+- include_tasks: nfs.yml
   when: nfsroot is defined and internal_domain is defined
   tags: nfs
 

@@ -1,9 +1,9 @@
 ---
 # OS Family Check
-- include: debian.yml
+- include_tasks: debian.yml
   when: ansible_os_family == 'Debian'
   tags: package
 
-- include: arch.yml
+- include_tasks: arch.yml
   when: ansible_os_family == 'Archlinux'
   tags: package

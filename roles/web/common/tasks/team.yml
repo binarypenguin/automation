@@ -28,7 +28,7 @@
   notify: Reload php-fpm
 
 - name: Create sites
-  include: site.yml
+  include_tasks: site.yml
   with_items: "{{ sites }}"
   loop_control:
     loop_var: site

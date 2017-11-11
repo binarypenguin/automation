@@ -29,9 +29,9 @@
     state: absent
 
 - name: Setup systemwide pages
-  include: system.yml
+  include_tasks: system.yml
 
 - name: Setup each team
-  include: team.yml
+  include_tasks: team.yml
   with_items: "{{ teams|default([]) + system_teams }}"
   when: teams is defined or system_teams is defined
