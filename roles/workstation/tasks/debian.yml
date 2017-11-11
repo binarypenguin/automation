@@ -44,12 +44,9 @@
   apt_repository: repo='deb http://repository.spotify.com stable non-free' state=present
   tags: package
 
+# https://keyserver.ubuntu.com/pks/lookup?op=vindex&search=tux%40spotify.com&fingerprint=on&exact=on
 - name: Add Spotify Key
-  apt_key: id=94558F59 keyserver=hkp://keyserver.ubuntu.com:80 state=present
-  tags: package
-
-- name: Add Second Spotify Key
-  apt_key: id=D2C19886 keyserver=hkp://keyserver.ubuntu.com:80 state=present
+  apt_key: id=341D9410 keyserver=hkp://keyserver.ubuntu.com:80 state=present
   tags: package
 
 - name: Install Spotify
