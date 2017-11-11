@@ -1,10 +1,10 @@
 ---
 - name: Create mount point for NFS server
   file: path=/net state=directory
-  when: ansible_domain == "{{ internal_domain }}"
+  when: ansible_domain == internal_domain
   tags: nfs
 
 - name: Mount NFS share
   mount: name=/net src={{ nfsroot }} fstype=nfs4 opts=_netdev,auto state=mounted
-  when: ansible_domain == "{{ internal_domain }}"
+  when: ansible_domain == internal_domain
   tags: nfs
