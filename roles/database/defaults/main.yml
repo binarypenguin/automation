@@ -1,8 +1,1 @@
----
-# System teams. Same format as the Teams array. Gets merged at run time.
-system_teams:
-  - name: binarypenguin
-    sites:
-      - domainname: binarypenguin.net
-        type: jekyll
-        repo: https://github.com/binarypenguin/binarypenguin.net.git
+#Defaults go here
