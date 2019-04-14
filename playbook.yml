@@ -6,7 +6,7 @@
       assert:
         that:
           - "{{ ansible_version is defined }}"
-          - "{{ ansible_version|version_compare(2.4, '>=') }}"
+          - "{{ ansible_version|version_compare(2.7, '>=') }}"
 
 # Common Configuration
 - name: apply common configuration to all nodes
