@@ -4,17 +4,10 @@
   with_items:
   - cryptsetup
   - gimp
-  - mangler
-  - php-cli
-  - php-curl
-  - php-mcrypt
   - rsnapshot
-  - seahorse
   - shutter
   - terminator
-  - thunderbird
   - ubuntu-restricted-extras
-  - vagrant
   - virt-manager
   tags: package
 
@@ -31,14 +24,6 @@
 
 - name: Create global pics folder for lightdm
   file: path=/var/cache/variety owner=root group=variety state=directory mode=2777
-
-- name: Apt Add HexChat stable
-  apt_repository: repo='ppa:gwendal-lebihan-dev/hexchat-stable'
-  tags: package
-
-- name: Install Hexchat Stable
-  apt: package=hexchat state=latest
-  tags: package
 
 - name: Apt Add Spotify
   apt_repository: repo='deb http://repository.spotify.com stable non-free' state=present
