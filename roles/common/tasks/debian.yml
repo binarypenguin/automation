@@ -38,7 +38,6 @@
   - nfs-common
   - python-dev
   - python-pip
-  - realpath
   - rpcbind
   - screen
   - ssh

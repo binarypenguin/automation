@@ -14,12 +14,19 @@
 - name: Ensure snaps are installed
   snap:
     state: present
+    classic: no
     name:
-      - atom
       - bitwarden
       - discord
       - spotify
-      - telegram
+      - telegram-desktop
+
+- name: Ensure snaps are installed (--classic)
+  snap:
+    state: present
+    classic: yes
+    name: 
+      - atom
 
 - name: Create Variety Group
   group:
