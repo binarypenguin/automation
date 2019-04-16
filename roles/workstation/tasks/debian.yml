@@ -8,16 +8,18 @@
   - shutter
   - terminator
   - ubuntu-restricted-extras
+  - variety
   - virt-manager
-  tags: package
 
-- name: Apt Add Variety
-  apt_repository: repo='ppa:variety/next'
-  tags: package
-
-- name: Install Variety
-  apt: package=variety state=latest
-  tags: package
+- name: Ensure snaps are installed
+  snap:
+    state: present
+    name:
+      - atom
+      - bitwarden
+      - discord
+      - spotify
+      - telegram
 
 - name: Create Variety Group
   group: name=variety state=present
@@ -25,30 +27,14 @@
 - name: Create global pics folder for lightdm
   file: path=/var/cache/variety owner=root group=variety state=directory mode=2777
 
-- name: Apt Add Spotify
-  apt_repository: repo='deb http://repository.spotify.com stable non-free' state=present
-  tags: package
-
-# https://keyserver.ubuntu.com/pks/lookup?op=vindex&search=tux%40spotify.com&fingerprint=on&exact=on
-- name: Add Spotify Key
-  apt_key: id=341D9410 keyserver=hkp://keyserver.ubuntu.com:80 state=present
-  tags: package
-
-- name: Install Spotify
-  apt: package=spotify-client state=latest force=yes
-  tags: package
-
 - name: Add Google Key
   apt_key: url=https://dl-ssl.google.com/linux/linux_signing_key.pub state=present
-  tags: package
 
 - name: Add Google Chrome repo
   apt_repository: repo='deb http://dl.google.com/linux/chrome/deb/ stable main' state=present
-  tags: package
 
 - name: Install Google Chrome Stable
   apt: package=google-chrome-stable state=latest
-  tags: package
 
 - name: Disable guest mode in Ubuntu
   copy: src=lightdm/50-no-guest.conf dest=/usr/share/lightdm/lightdm.conf.d/50-no-guest.conf owner=root group=root mode=0644
