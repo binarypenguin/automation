@@ -22,19 +22,37 @@
       - telegram
 
 - name: Create Variety Group
-  group: name=variety state=present
+  group:
+    name: variety
+    state: present
 
 - name: Create global pics folder for lightdm
-  file: path=/var/cache/variety owner=root group=variety state=directory mode=2777
+  file:
+    path: /var/cache/variety
+    owner: root
+    group: variety
+    state: directory
+    mode: 2777
 
 - name: Add Google Key
-  apt_key: url=https://dl-ssl.google.com/linux/linux_signing_key.pub state=present
+  apt_key:
+    url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+    state: present
 
 - name: Add Google Chrome repo
-  apt_repository: repo='deb http://dl.google.com/linux/chrome/deb/ stable main' state=present
+  apt_repository:
+    repo: deb http://dl.google.com/linux/chrome/deb/ stable main
+    state: present
 
 - name: Install Google Chrome Stable
-  apt: package=google-chrome-stable state=latest
+  apt:
+    package: google-chrome-stable
+    state: latest
 
 - name: Disable guest mode in Ubuntu
-  copy: src=lightdm/50-no-guest.conf dest=/usr/share/lightdm/lightdm.conf.d/50-no-guest.conf owner=root group=root mode=0644
+  copy:
+    src: lightdm/50-no-guest.conf
+    dest: /usr/share/lightdm/lightdm.conf.d/50-no-guest.conf
+    owner: root
+    group: root
+    mode: 0644
