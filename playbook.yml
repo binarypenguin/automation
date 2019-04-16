@@ -52,7 +52,6 @@
   become: yes
   roles:
     - workstation
-    - tools/composer
 
 # ZNC Bouncer
 - name: znc bouncer configuration
