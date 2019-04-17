@@ -1,16 +1,21 @@
 ---
 - name: Ensure packages are installed
-  apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
-  with_items:
-  - curl
-  - php-cli
-  - php-curl
-  - php-mcrypt
+  apt:
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - curl
+    - php-cli
+    - php-curl
+    - php-mcrypt
   when: ansible_os_family == 'Debian'
   tags: composer
 
 - name: Ensure packages are installed
-  pacman: pkg={{item}} state=latest update_cache=yes
+  pacman:
+    pkg: "{{ item }}"
+    state: present
   with_items:
   - curl
   - php

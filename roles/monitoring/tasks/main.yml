@@ -1,10 +1,14 @@
 ---
-- set_fact:
+- name: "Setting netdata src"
+  set_fact:
     netdata_src: "/usr/src/netdata.git"
 
 - name: Ensure packages are installed
-  apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
-  with_items:
+  apt:
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
     - zlib1g-dev
     - uuid-dev
     - libmnl-dev
@@ -20,7 +24,9 @@
   when: ansible_os_family == 'Debian'
 
 - name: Ensure packages are installed
-  dnf: name={{item}} state=latest
+  dnf:
+    name: "{{ item }}"
+    state: present
   with_items:
     - zlib-devel
     - libuuid-devel
@@ -43,6 +49,7 @@
     repo: https://github.com/firehol/netdata.git
     depth: 1
     dest: "{{ netdata_src }}"
+    version: "{{ netdata.version | default('HEAD') }}"
 
 - name: Install Netdata
   command: ./netdata-installer.sh --dont-wait --auto-update chdir="{{ netdata_src }}" creates=/usr/sbin/netdata
@@ -90,7 +97,7 @@
     path: /etc/netdata/health_alarm_notify.conf
     state: present
     regexp: "^SLACK_WEBHOOK_URL="
-    line: "SLACK_WEBHOOK_URL={{slack_webhook_url}}"
+    line: "SLACK_WEBHOOK_URL={{ slack_webhook_url }}"
   when: slack_webhook_url is defined
 
 - name: Set Slack Channel
@@ -98,5 +105,5 @@
     path: /etc/netdata/health_alarm_notify.conf
     state: present
     regexp: "^DEFAULT_RECIPIENT_SLACK="
-    line: "DEFAULT_RECIPIENT_SLACK={{ slack_alarms | default('infrastructure') }}"
+    line: "DEFAULT_RECIPIENT_SLACK={{ slack_alarms|default('infrastructure') }}"
   when: slack_webhook_url is defined

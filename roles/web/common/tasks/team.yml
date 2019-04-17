@@ -5,23 +5,23 @@
 
 - name: Create Team Group
   group:
-    name: "www-{{team.name}}"
+    name: "www-{{ team.name }}"
     system: yes
     state: present
 
 - name: Create Team System Account
   user:
-    name: "www-{{team.name}}"
-    group: "www-{{team.name}}"
+    name: "www-{{ team.name }}"
+    group: "www-{{ team.name }}"
     system: yes
     append: yes
-    home: "{{nginx_www_dir}}/{{team.name}}"
+    home: "{{ nginx_www_dir }}/{{ team.name }}"
     state: present
 
 - name: Create new php-fpm pool for team
   template:
-    src: ../templates/www.conf.j2
-    dest: /etc/php/7.0/fpm/pool.d/www-{{team.name}}.conf
+    src: templates/www.conf.j2
+    dest: /etc/php/7.0/fpm/pool.d/www-{{ team.name }}.conf
     owner: root
     group: root
     mode: 0644

@@ -7,14 +7,17 @@
     update_cache: yes
 
 - name: Install ZNC
-  apt: pkg={{item}} state=latest update_cache=yes
-  with_items:
-  - znc
-  - znc-dbg
-  - znc-dev
-  - znc-perl
-  - znc-python
-  - znc-tcl
+  apt:
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - znc
+    - znc-dbg
+    - znc-dev
+    - znc-perl
+    - znc-python
+    - znc-tcl
 
 - name: Create ZNC User
   user:

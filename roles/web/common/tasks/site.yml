@@ -26,37 +26,37 @@
 
 - name: Create site virtual directory
   file:
-    path: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
+    path: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
     state: directory
-    owner: "www-{{team.name}}"
-    group: "www-{{team.name}}"
+    owner: "www-{{ team.name }}"
+    group: "www-{{ team.name }}"
     mode: 0755
   when: site.type != "redirect"
 
 - name: Create available virtual hosts
   template:
-    src: ../templates/vhost.j2
-    dest: "/etc/nginx/sites-available/{{team.name}}-{{site.domainname}}"
+    src: templates/vhost.j2
+    dest: "/etc/nginx/sites-available/{{ team.name }}-{{ site.domainname }}"
     owner: root
     group: root
     mode: 0644
-    force: "{{ site.managed|default(True) }}"
+    force: "{{ site.managed | default(True) }}"
   when: site.type != "redirect"
 
 - name: Create available virtual hosts redirect
   template:
-    src: ../templates/vhost-redirect.j2
-    dest: "/etc/nginx/sites-available/{{team.name}}-{{site.domainname}}"
+    src: templates/vhost-redirect.j2
+    dest: "/etc/nginx/sites-available/{{ team.name }}-{{ site.domainname }}"
     owner: root
     group: root
     mode: 0644
-    force: "{{ site.managed|default(True) }}"
+    force: "{{ site.managed | default(True) }}"
   when: site.type == "redirect"
 
 - name: Enable virtual hosts
   file:
-    src: "/etc/nginx/sites-available/{{team.name}}-{{site.domainname}}"
-    dest: "/etc/nginx/sites-enabled/{{team.name}}-{{site.domainname}}"
+    src: "/etc/nginx/sites-available/{{ team.name }}-{{ site.domainname }}"
+    dest: "/etc/nginx/sites-enabled/{{ team.name }}-{{ site.domainname }}"
     owner: root
     group: root
     mode: 0644
@@ -65,21 +65,21 @@
 - name: Pull website repos
   git:
     repo: "{{ site.repo }}"
-    dest: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
-    version: "{{ site.version|default('HEAD') }}"
+    dest: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
+    version: "{{ site.version | default('HEAD') }}"
   when: site.repo is defined
 
 - name: Compile the Jekylls
   shell: jekyll build
   args:
-    chdir: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
+    chdir: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
   when: site.type == "jekyll"
 
 - name: Update Folder Permissions
   file:
-    path: "{{nginx_www_dir}}/{{team.name}}/{{site.domainname}}"
-    owner: "www-{{team.name}}"
-    group: "www-{{team.name}}"
+    path: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
+    owner: "www-{{ team.name }}"
+    group: "www-{{ team.name }}"
     mode: u=rwX,g=rwX,o=rX
     recurse: yes
   when: site.type != "redirect"

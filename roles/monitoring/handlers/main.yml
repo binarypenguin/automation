@@ -1,4 +1,5 @@
 ---
 - name: Reload netdata
-  service: name=netdata state=restarted
-  sudo: yes
+  service:
+    name: netdata
+    state: restarted

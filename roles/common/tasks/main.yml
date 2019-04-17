@@ -12,21 +12,22 @@
   when: ansible_os_family == 'RedHat'
   tags: package
 
-# Update PIP
-- pip: name=pip state=latest
+- name: Install PIP Packages
+  pip:
+    name:
+    - pip
+    - setuptools
+    - thefuck
+    state: present
   tags: pip
-
-# Install setuptools python package.
-- pip: name=setuptools state=latest
-  tags: pip
-
-# Install thefuck python package.
-- pip: name=thefuck state=latest
-  tags: thefuck
 
 # Creates file for aliasing fuck to thefuck
 - name: Add fuck as alias to thefuck in /etc/profile.d/thefuck.sh
-  lineinfile: dest=/etc/profile.d/thefuck.sh line="alias fuck='eval $(thefuck $(fc -ln -1)); history -r'" mode="0755" create=yes
+  lineinfile:
+    dest: /etc/profile.d/thefuck.sh
+    line: "alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
+    mode: 0755
+    create: yes
   tags: thefuck
 
 ##
@@ -40,11 +41,14 @@
 # SSH Hardening
 ##
 - name: Deploy SSH Config
-  template: src=../files/sshd_config.j2
-      dest=/etc/ssh/sshd_config
-      backup=yes
-      owner=0 group=0 mode=0644
-      validate='/usr/sbin/sshd -T -f %s'
+  template:
+    src: ../files/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    backup: yes
+    owner: root
+    group: root
+    mode: 0644
+    validate: '/usr/sbin/sshd -T -f %s'
   notify:
     - restart sshd
 
@@ -53,12 +57,17 @@
 ##
 - name: Clone Binary Penguin Scripts
   git:
-      repo: 'https://github.com/binarypenguin/scripts.git'
-      dest: /opt/binarypenguin
-      update: yes
-      accept_hostkey: true
+    repo: 'https://github.com/binarypenguin/scripts.git'
+    dest: /opt/binarypenguin
+    update: yes
+    accept_hostkey: true
+    version: "{{ binarypenguin_scripts.version | default('HEAD') }}"
   tags: binary-penguin-scripts
 
 - name: Add Binary Penguin Scripts to $PATH
-  lineinfile: dest=/etc/profile.d/binarypenguin.sh line="export PATH=$PATH:/opt/binarypenguin/bin" mode="0755" create=yes
+  lineinfile:
+    dest: /etc/profile.d/binarypenguin.sh
+    line: "export PATH=$PATH:/opt/binarypenguin/bin"
+    mode: "0755"
+    create: yes
   tags: binary-penguin-scripts

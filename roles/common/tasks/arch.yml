@@ -1,6 +1,8 @@
 ---
 - name: Ensure packages are installed
-  pacman: pkg={{item}} state=present
+  pacman:
+    package: "{{ item }}"
+    state: present
   with_items:
   - cowsay
   - figlet
@@ -25,7 +27,9 @@
 #  - molly-guard
 
 - name: Ensure packages are installed (On physical machines only)
-  pacman: pkg={{item}} state=latest
+  pacman:
+    package: "{{ item }}"
+    state: present
   with_items:
   - smartmontools
   #- memtester
@@ -36,5 +40,8 @@
 # MOTD
 ##
 - name: Add ASCII art banner to MOTD
-  shell: echo -e "\e[0;32m$(figlet $(hostname))\e[0m" > /etc/motd
+  lineinfile:
+    line: "\e[0;32m$(figlet $(hostname))\e[0m"
+    state: present
+    path: /etc/motd
   tags: motd

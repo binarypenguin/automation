@@ -7,21 +7,25 @@
 
 - name: Ensure packages are installed
   apt:
-    pkg={{item}}
-    force_apt_get=yes
-    update_cache=yes
-    state=latest
-  with_items:
-  - nginx
-  - php-fpm
-  - php7.0-simplexml
-  - jekyll
-  - python-mysqldb
-  - mariadb-client
-  - python-certbot-nginx
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - nginx
+    - php-fpm
+    - php7.0-simplexml
+    - jekyll
+    - python-mysqldb
+    - mariadb-client
+    - python-certbot-nginx
 
 - name: Create nginx root directory
-  file: path=/srv/nginx state=directory mode=0755 owner=root group=root
+  file:
+    path: /srv/nginx
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Disable default virtual host
   file:
@@ -33,5 +37,5 @@
 
 - name: Setup each team
   include_tasks: team.yml
-  with_items: "{{ teams|default([]) + system_teams }}"
+  with_items: "{{ teams | default([]) + system_teams }}"
   when: teams is defined or system_teams is defined

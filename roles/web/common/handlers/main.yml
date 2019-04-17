@@ -1,8 +1,12 @@
 ---
 - name: Reload nginx
-  service: name=nginx state=restarted
-  sudo: yes
+  service:
+    name: nginx
+    state: restarted
+  become: yes
 
 - name: Reload php-fpm
-  service: name=php7.0-fpm state=reloaded
-  sudo: yes
+  service:
+    name: php7.0-fpm
+    state: reloaded
+  become: yes

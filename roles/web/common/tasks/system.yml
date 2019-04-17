@@ -1,7 +1,7 @@
 ---
 - name: System page config
   template:
-    src: ../templates/system.conf.j2
+    src: templates/system.conf.j2
     dest: /etc/nginx/system.conf
     owner: root
     group: root
