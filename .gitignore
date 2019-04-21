@@ -3,3 +3,4 @@ hosts
 *.facts
 *.retry
 *.log
+venv
