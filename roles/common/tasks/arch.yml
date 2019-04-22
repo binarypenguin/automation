@@ -41,7 +41,7 @@
 ##
 - name: Add ASCII art banner to MOTD
   lineinfile:
-    line: "\e[0;32m$(figlet $(hostname))\e[0m"
+    line: "echo -e \e[0;32m$(figlet $(hostname))\e[0m"
     state: present
     path: /etc/motd
   tags: motd
