@@ -82,6 +82,7 @@
   become: yes
   roles:
     - role: workstation
+    - role: tools/composer
 
 # ZNC Bouncer
 - name: znc bouncer configuration

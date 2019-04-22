@@ -70,7 +70,7 @@
   when: site.repo is defined
 
 - name: Compile the Jekylls
-  shell: jekyll build
+  command: jekyll build
   args:
     chdir: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
   when: site.type == "jekyll"

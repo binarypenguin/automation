@@ -1,4 +1,5 @@
 ansible==2.8.0b1
+ansible-lint==4.1.0
 asn1crypto==0.24.0
 cffi==1.12.3
 cryptography==2.6.1
@@ -8,4 +9,6 @@ Jinja2==2.10.1
 MarkupSafe==1.1.1
 pycparser==2.19
 PyYAML==5.1
+ruamel.ordereddict==0.4.13
+ruamel.yaml==0.15.93
 six==1.12.0
