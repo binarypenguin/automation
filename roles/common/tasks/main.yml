@@ -1,15 +1,42 @@
 ---
-# OS Family Check
-- include_tasks: debian.yml
-  when: ansible_os_family == 'Debian'
+##
+# Install Packages
+##
+- name: Ensure packages are installed
+  apt:
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - cowsay
+    - figlet
+    - fortune
+    - git
+    - htop
+    - iftop
+    - iotop
+    - molly-guard
+    - mtr
+    - ncdu
+    - nfs-common
+    - python-dev
+    - python-pip
+    - rpcbind
+    - screen
+    - ssh
+    - sshfs
+    - uptimed
   tags: package
 
-- include_tasks: arch.yml
-  when: ansible_os_family == 'Archlinux'
-  tags: package
-
-- include_tasks: fedora.yml
-  when: ansible_os_family == 'RedHat'
+- name: Ensure packages are installed (On physical machines only)
+  apt:
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - smartmontools
+      - memtester
+  when: ansible_virtualization_role == "host"
   tags: package
 
 - name: Install PIP Packages
@@ -20,6 +47,19 @@
     - thefuck
     state: present
   tags: pip
+
+##
+# Preferences
+##
+- include_tasks: motd.yml
+
+- name: Enable Colored Prompts
+  lineinfile:
+    dest: /etc/profile.d/binarypenguin.sh
+    line: "export force_color_prompt=yes"
+    mode: "0755"
+    create: yes
+  tags: binary-penguin-preferences
 
 # Creates file for aliasing fuck to thefuck
 - name: Add fuck as alias to thefuck in /etc/profile.d/thefuck.sh

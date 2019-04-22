@@ -21,27 +21,6 @@
     - automake
     - pkg-config
     - curl
-  when: ansible_os_family == 'Debian'
-
-- name: Ensure packages are installed
-  dnf:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - zlib-devel
-    - libuuid-devel
-    - libmnl-devel
-    - gcc
-    - make
-    - git
-    - autoconf
-    - autoconf-archive
-    - autogen
-    - automake
-    - pkgconfig
-    - curl
-    - findutils
-  when: ansible_os_family == 'RedHat'
 
 #git clone https://github.com/firehol/netdata.git --depth=1
 - name: Clone the netdata repo
@@ -83,27 +62,3 @@
     value: "http://{{ netdata_registry_registry_to_announce }}:{{ netdata_registry_port | default('19999') }}"
   when: netdata_registry_registry_to_announce is defined
   notify: Reload netdata
-
-- name: Enable Slack Alerts
-  lineinfile:
-    path: /etc/netdata/health_alarm_notify.conf
-    state: present
-    regexp: "^SEND_SLACK="
-    line: "SEND_SLACK=YES"
-  when: slack_webhook_url is defined
-
-- name: Set Slack Webhook URL
-  lineinfile:
-    path: /etc/netdata/health_alarm_notify.conf
-    state: present
-    regexp: "^SLACK_WEBHOOK_URL="
-    line: "SLACK_WEBHOOK_URL={{ slack_webhook_url }}"
-  when: slack_webhook_url is defined
-
-- name: Set Slack Channel
-  lineinfile:
-    path: /etc/netdata/health_alarm_notify.conf
-    state: present
-    regexp: "^DEFAULT_RECIPIENT_SLACK="
-    line: "DEFAULT_RECIPIENT_SLACK={{ slack_alarms|default('infrastructure') }}"
-  when: slack_webhook_url is defined

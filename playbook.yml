@@ -6,56 +6,86 @@
       assert:
         that:
           - "{{ ansible_version is defined }}"
-          - "{{ ansible_version is version_compare(2.7, '>=') }}"
+          - "{{ ansible_version is version_compare(2.8, '>=') }}"
+          - "{{ ansible_os_family == 'Debian' }}"
+
+    - name: Update System Package Cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        force_apt_get: yes
+      tags: update_system
+
+    - name: Upgrade System Packages
+      apt:
+        upgrade: full
+        force_apt_get: yes
+      tags: update_system
+
+    - name: Remove useless packages from the cache
+      apt:
+        autoclean: yes
+
+    - name: Remove dependencies that are no longer required
+      apt:
+        autoremove: yes
+
 
 # Common Configuration
 - name: apply common configuration to all nodes
   hosts: all
   become: yes
   roles:
-    - health
-    - common
-    - { role: monitoring, tags: monitoring }
+    - role: common
+    - role: monitoring
+      tags:
+        - monitoring
 
 # Bastions Configuration
 - name: bastion configuration
   hosts: bastions
   become: yes
   roles:
-    - bastion
+    - role: bastion
 
 # Database Server Configuration
 - name: database server configuration
   hosts: database
   become: yes
   roles:
-    - { role: database, tags: ['database'] }
+    - role: database
+      tags:
+        - database
 
 # PXE Server Configuration
 - name: pxe server configuration
   hosts: pxe
   become: yes
   roles:
-    - { role: pxe, tags: ['pxe'] }
+    - role: pxe
+      tags:
+        - pxe
 
 # Web Server Configuration
 - name: web server configuration
   hosts: web
   become: yes
   roles:
-    - { role: web/common, tags: ['web'] }
-    - tools/composer
+    - role: web/common
+      tags:
+        - web
+    - role: tools/composer
 
 # Workstation Configuration
 - name: workstation configuration
   hosts: workstations
   become: yes
   roles:
-    - workstation
+    - role: workstation
 
 # ZNC Bouncer
 - name: znc bouncer configuration
   hosts: znc
   become: yes
   roles:
-    - znc
+    - role: znc
