@@ -4,7 +4,7 @@ A few simple [ansible](https://docs.ansible.com) roles I use on my home network 
 # Dependencies
 * Ansible =< v2.8.0b
 
-#Getting Started
+# Getting Started
 * Clone this repo: ```git clone https://github.com/binarypenguin/automation.git```
 * Create an inventory if you desire. Each inventory (```hosts```) can be a sub directory of ```inventories```. Localhost already exists if you just want to run against your local machine. (See [Ansible Inventory](http://docs.ansible.com/ansible/intro_inventory.html))
 * Have a look at ```playbook.yml``` for groups that are available and the roles that are applied to them
