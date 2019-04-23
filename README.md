@@ -1,7 +1,7 @@
 # Automation
 A few simple [ansible](https://docs.ansible.com) roles I use on my home network and VPS's.
 
-#Dependencies
+# Dependencies
 * Ansible =< v2.8.0b
 
 #Getting Started
@@ -16,7 +16,7 @@ A few simple [ansible](https://docs.ansible.com) roles I use on my home network 
 ** Now you have ansible ready for use, just run: ```ansible-playbook playbook.yml -i inventories/localhost```
 ** When you are done, you can exit the virutalenv: ```deactivate```
 
-#Roles
+# Roles
 ## Common
 Installs a few common utilities on each machine.
 
