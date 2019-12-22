@@ -62,18 +62,47 @@
     mode: 0644
     state: link
 
+- name: Create Deploy Key Location
+  file:
+    path: "/etc/ssh/deploy_keys/{{ team.name }}"
+    state: directory
+    mode: 0700
+    owner: root
+    group: root
+
+- stat:
+    path: "/etc/ssh/deploy_keys/{{ team.name }}/{{ site.domainname }}"
+  register: kp
+
+- name: Generate Site Deploy Keypair if it doesn't exist
+  block:
+    - name: Generate Keypair
+      openssh_keypair:
+        path: "/etc/ssh/deploy_keys/{{ team.name }}/{{ site.domainname }}"
+        type: rsa
+        size: 4096
+      register: result
+    - debug:
+        msg: "{{ result }}"
+
+    - pause:
+        prompt: Deploy key \n"{{ result.public_key }}"
+  when: kp.stat.exists == False and site.private_repo is defined
+
+- name: Pull private website repos
+  git:
+    repo: "{{ site.repo }}"
+    dest: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
+    version: "{{ site.version | default('HEAD') }}"
+    key_file: "/etc/ssh/deploy_keys/{{ team.name }}/{{ site.domainname }}"
+  when: site.repo is defined and site.private_repo is defined
+
 - name: Pull website repos
   git:
     repo: "{{ site.repo }}"
     dest: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
     version: "{{ site.version | default('HEAD') }}"
-  when: site.repo is defined
-
-- name: Compile the Jekylls
-  command: jekyll build
-  args:
-    chdir: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
-  when: site.type == "jekyll"
+  when: site.repo is defined and site.private_repo is not defined
 
 - name: Update Folder Permissions
   file:
@@ -83,3 +112,13 @@
     mode: u=rwX,g=rwX,o=rX
     recurse: yes
   when: site.type != "redirect"
+
+# - name: Compile the Jekylls
+#   include_tasks: jekyll.yml
+#   args:
+#     apply:
+#       become: yes
+#       become_user: "www-{{ team.name }}"
+#       environment:
+#         PATH: "{{ nginx_www_dir }}/{{ team.name }}/.gem/ruby/2.5.0/bin:/usr/bin:/bin:/sbin"
+#   when: site.type == "jekyll"

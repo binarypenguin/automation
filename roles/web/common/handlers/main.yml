@@ -7,6 +7,6 @@
 
 - name: Reload php-fpm
   service:
-    name: php7.0-fpm
+    name: php7.2-fpm
     state: reloaded
   become: yes

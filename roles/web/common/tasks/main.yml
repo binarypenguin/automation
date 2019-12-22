@@ -13,11 +13,14 @@
     packages:
     - nginx
     - php-fpm
-    - php7.0-simplexml
-    - jekyll
     - python-mysqldb
-    - mariadb-client
     - python-certbot-nginx
+    - ruby-full
+    - build-essential
+    - zlib1g-dev
+
+- name: Update System Wide Gems
+  shell: gem update --system
 
 - name: Create nginx root directory
   file:
@@ -34,6 +37,14 @@
 
 - name: Setup systemwide pages
   include_tasks: system.yml
+
+- name: Create Deploy Key Location
+  file:
+    path: /etc/ssh/deploy_keys
+    state: directory
+    mode: 0700
+    owner: root
+    group: root
 
 - name: Setup each team
   include_tasks: team.yml

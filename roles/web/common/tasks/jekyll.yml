@@ -1,0 +1,29 @@
+
+
+#GEM_HOME="$HOME/gems"
+#PATH="$HOME/gems/bin:$PATH"
+
+- name: Jekyll
+  block:
+    - name: Install Jekyll
+      gem:
+        name: jekyll
+        state: latest
+        user_install: yes
+
+    - name: Install Bundler
+      gem:
+        name: bundler
+        state: latest
+        user_install: yes
+
+    - name: Install Bundles
+      bundler:
+        state: latest
+        chdir: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
+        user_install: True
+
+    - name: Compile the Jekylls
+      command: jekyll build
+      args:
+        chdir: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"

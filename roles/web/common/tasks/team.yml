@@ -16,12 +16,13 @@
     system: yes
     append: yes
     home: "{{ nginx_www_dir }}/{{ team.name }}"
+    shell: /bin/bash
     state: present
 
 - name: Create new php-fpm pool for team
   template:
     src: templates/www.conf.j2
-    dest: /etc/php/7.0/fpm/pool.d/www-{{ team.name }}.conf
+    dest: /etc/php/7.2/fpm/pool.d/www-{{ team.name }}.conf
     owner: root
     group: root
     mode: 0644
