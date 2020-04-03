@@ -12,17 +12,21 @@ server {
     server_name {{ site.domainname }};
     return 302 https://{{ site.domainname }}$request_uri;
 }
+
 {% endif%}
 
 server {
   {% if 'ssl_cert' in site and 'ssl_cert_key' in site -%}
-  listen {{ site.port|default(443) }} ssl;
   keepalive_timeout   70;
 
   add_header Strict-Transport-Security “max-age=31536000”;
 
+  listen {{ site.port|default(443) }} ssl;
   ssl_certificate         {{ site.ssl_cert }};
   ssl_certificate_key     {{ site.ssl_cert_key }};
+  include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
   {% else -%}
   listen {{ site.port|default(80) }};
   {%- endif %}
