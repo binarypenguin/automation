@@ -48,5 +48,5 @@
 
 - name: Setup each team
   include_tasks: team.yml
-  with_items: "{{ teams | default([]) + system_teams }}"
-  when: teams is defined or system_teams is defined
+  # system_teams needs to be first so that it can be overridden by teams (user defined)
+  with_items: "{{ system_teams + teams | default([]) }}"

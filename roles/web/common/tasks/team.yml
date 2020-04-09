@@ -28,6 +28,9 @@
     mode: 0644
   notify: Reload php-fpm
 
+- debug:
+    var: sites
+
 - name: Create sites
   include_tasks: site.yml
   with_items: "{{ sites }}"

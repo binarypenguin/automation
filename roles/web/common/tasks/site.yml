@@ -1,30 +1,30 @@
 - debug:
-    msg: "Site: {{ site.domainname }}"
+    var: site
 
-- name:  Set site facts
+- name:  Set {{ site.domainname }} facts
   set_fact:
     system_pages: True
     webroot: /srv/nginx/{{ team.name }}/{{ site.domainname }}/
 
-- name: When Laravel
+- name: Is {{ site.domainname }} Laravel?
   set_fact:
     webroot: /srv/nginx/{{ team.name }}/{{ site.domainname }}/public
     system_pages: False
   when: site.type == "laravel"
 
-- name: When Jekyll
+- name: Is {{ site.domainname }} Jekyll?
   set_fact:
     webroot: /srv/nginx/{{ team.name }}/{{ site.domainname }}/_site
   when: site.type == "jekyll"
 
-- name: Create site database
+- name: Create site database for {{ site.domainname }}e
   mysql_db:
     name: "{{ team.name }}-{{ site.domainname | replace('.','_') }}"
     login_host: "{{ site.db_server }}"
     state: present
   when: site.db_server is defined and site.db_server | ipaddr
 
-- name: Create site virtual directory
+- name: Create site virtual directory for {{ site.domainname }}
   file:
     path: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
     state: directory
@@ -33,7 +33,7 @@
     mode: 0755
   when: site.type != "redirect"
 
-- name: Create available virtual hosts
+- name: Create available virtual hosts for {{ site.domainname }}
   template:
     src: templates/vhost.j2
     dest: "/etc/nginx/sites-available/{{ team.name }}-{{ site.domainname }}"
@@ -43,7 +43,7 @@
     force: "{{ site.managed | default(True) }}"
   when: site.type != "redirect"
 
-- name: Create available virtual hosts redirect
+- name: Create available virtual hosts redirect for {{ site.domainname }}
   template:
     src: templates/vhost-redirect.j2
     dest: "/etc/nginx/sites-available/{{ team.name }}-{{ site.domainname }}"
@@ -53,7 +53,7 @@
     force: "{{ site.managed | default(True) }}"
   when: site.type == "redirect"
 
-- name: Enable virtual hosts
+- name: Enable virtual hosts for {{ site.domainname }}
   file:
     src: "/etc/nginx/sites-available/{{ team.name }}-{{ site.domainname }}"
     dest: "/etc/nginx/sites-enabled/{{ team.name }}-{{ site.domainname }}"
@@ -62,7 +62,7 @@
     mode: 0644
     state: link
 
-- name: Create Deploy Key Location
+- name: Create Deploy Key Location for {{ team.name }}
   file:
     path: "/etc/ssh/deploy_keys/{{ team.name }}"
     state: directory
@@ -74,7 +74,7 @@
     path: "/etc/ssh/deploy_keys/{{ team.name }}/{{ site.domainname }}"
   register: kp
 
-- name: Generate Site Deploy Keypair if it doesn't exist
+- name: Generate Site Deploy Keypair if it doesn't exist for {{ site.domainname }}
   block:
     - name: Generate Keypair
       openssh_keypair:
@@ -89,7 +89,7 @@
         prompt: Deploy key \n"{{ result.public_key }}"
   when: kp.stat.exists == False and site.private_repo is defined
 
-- name: Pull private website repos
+- name: Pull private website repos for {{ site.domainname }}
   git:
     repo: "{{ site.repo }}"
     dest: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
@@ -97,14 +97,14 @@
     key_file: "/etc/ssh/deploy_keys/{{ team.name }}/{{ site.domainname }}"
   when: site.repo is defined and site.private_repo is defined
 
-- name: Pull website repos
+- name: Pull website repos for {{ site.domainname }}
   git:
     repo: "{{ site.repo }}"
     dest: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
     version: "{{ site.version | default('HEAD') }}"
   when: site.repo is defined and site.private_repo is not defined
 
-- name: Update Folder Permissions
+- name: Update Folder Permissions for {{ site.domainname }} 
   file:
     path: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
     owner: "www-{{ team.name }}"
