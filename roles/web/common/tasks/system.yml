@@ -6,3 +6,20 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Create available virtual host for all HTTP requests
+  template:
+    src: templates/vhost-http-redirect.j2
+    dest: "/etc/nginx/sites-available/00-http-redirect"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable virtual hosts for all HTTP requests
+  file:
+    src: "/etc/nginx/sites-available/00-http-redirect"
+    dest: "/etc/nginx/sites-enabled/00-http-redirect"
+    owner: root
+    group: root
+    mode: 0644
+    state: link
