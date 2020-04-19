@@ -19,8 +19,8 @@
     - mtr
     - ncdu
     - nfs-common
-    - python-dev
-    - python-pip
+    - python3-dev
+    - python3-pip
     - rpcbind
     - screen
     - ssh
@@ -39,14 +39,14 @@
   when: ansible_virtualization_role == "host"
   tags: package
 
-- name: Install PIP Packages
+- name: Install PIP3 Packages
   pip:
     name:
-    - pip
     - setuptools
     - thefuck
+    executable: /usr/bin/pip3
     state: present
-  tags: pip
+  tags: pip3
 
 ##
 # Preferences

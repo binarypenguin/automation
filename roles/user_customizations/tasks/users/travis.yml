@@ -1,0 +1,20 @@
+---
+- name: Gedit Customizations
+  dconf:
+    key: "/org/gnome/gedit/preferences/editor/{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+  loop:
+    - { key: 'scheme', value: "'oblivion'" }
+    - { key: 'insert-spaces', value: "true" }
+    - { key: 'tab-size', value: "'8'" }
+
+- name: Background Customizations
+  dconf:
+    key: "/org/gnome/desktop/background/{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+  loop:
+    - { key: 'picture-options', value: "'none'" }
+    - { key: 'primary-color', value: "'#E95420'" }
+    - { key: 'show-desktop-icons', value: "false" }
