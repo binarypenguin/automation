@@ -18,3 +18,12 @@
     - { key: 'picture-options', value: "'none'" }
     - { key: 'primary-color', value: "'#E95420'" }
     - { key: 'show-desktop-icons', value: "false" }
+
+- name: Remove Desktop Icons
+  dconf:
+    key: "/org/gnome/shell/extensions/desktop-icons/{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+  loop:
+    - { key: 'show-trash', value: "false" }
+    - { key: 'show-home', value: "false" }
