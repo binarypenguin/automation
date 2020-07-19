@@ -5,8 +5,8 @@
     - name: Checking Ansible Version
       assert:
         that:
-          - "{{ ansible_version is defined }}"
-          - "{{ ansible_version is version_compare(2.8, '>=') }}"
+          - "{{ ansible_version.full is defined }}"
+          - "{{ ansible_version.full is version('2.9', 'gt') }}"
           - "{{ ansible_os_family == 'Debian' }}"
 
     - name: Update System Package Cache
