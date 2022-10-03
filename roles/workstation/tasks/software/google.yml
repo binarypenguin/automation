@@ -1,10 +1,13 @@
 ---
-- name: Add Google Key
-  apt_key:
-    url: https://dl-ssl.google.com/linux/linux_signing_key.pub
-    state: present
 
-# Delete the default list file that we likely created in the past using ansible
+- name: Add Google key
+  ansible.builtin.get_url:
+    url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+    dest: /etc/apt/keyrings/google.asc
+    mode: '0644'
+    force: true
+
+# LEGACY: Delete the default list file that we likely created in the past using ansible
 - name: Delete dl_google_com_linux_chrome_deb.list
   file:
     path: /etc/apt/sources.list.d/dl_google_com_linux_chrome_deb.list
@@ -12,9 +15,9 @@
 
 - name: Add Google Chrome repo
   apt_repository:
-    repo: 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main'
+    repo: 'deb [arch=amd64 signed-by=/etc/apt/keyrings/google.asc] http://dl.google.com/linux/chrome/deb/ stable main'
     # The Google Chrome installer uses this filename. Should prevent duplicate repo errors going forward.
-    filename: google-chrome.list
+    filename: google-chrome
     state: present
 
 - name: Install Google Chrome

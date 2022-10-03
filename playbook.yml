@@ -9,29 +9,31 @@
           - "{{ ansible_version.full is version('2.9', 'gt') }}"
           - "{{ ansible_os_family == 'Debian' }}"
 
-    - name: Update System Package Cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-        force_apt_get: yes
-      tags: update_system
-
-    - name: Upgrade System Packages
-      apt:
-        upgrade: full
-        force_apt_get: yes
-      tags: update_system
-
-    - name: Remove useless packages from the cache
-      apt:
-        autoclean: yes
-
-    - name: Remove dependencies that are no longer required
-      apt:
-        autoremove: yes
+# Not sure why this is done on localhost every time...
+    # - name: Update System Package Cache
+    #   apt:
+    #     update_cache: yes
+    #     cache_valid_time: 3600
+    #     force_apt_get: yes
+    #   tags: update_system
+    #
+    # - name: Upgrade System Packages
+    #   apt:
+    #     upgrade: full
+    #     force_apt_get: yes
+    #   tags: update_system
+    #
+    # - name: Remove useless packages from the cache
+    #   apt:
+    #     autoclean: yes
+    #
+    # - name: Remove dependencies that are no longer required
+    #   apt:
+    #     autoremove: yes
 
 
 # Common Configuration
+
 - name: apply common configuration to all nodes
   hosts: all
   become: yes
@@ -40,9 +42,10 @@
     - role: user_customizations
       tags:
         - user_customizations
-    - role: monitoring
-      tags:
-        - monitoring
+# TODO: Needs updated if we are going to continue using netdata
+    # - role: monitoring
+    #   tags:
+    #     - monitoring
 
 # Bastions Configuration
 - name: bastion configuration
@@ -85,7 +88,9 @@
   become: yes
   roles:
     - role: workstation
-    - role: tools/composer
+      tags:
+        - workstation
+#    - role: tools/composer
 
 # ZNC Bouncer
 - name: znc bouncer configuration

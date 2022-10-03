@@ -14,6 +14,7 @@
     - git
     - htop
     - iftop
+    - iperf
     - iotop
     - molly-guard
     - mtr
@@ -28,6 +29,12 @@
     - uptimed
   tags: package
 
+- name: Create /etc/apt/keyrings folder
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
 - name: Ensure packages are installed (On physical machines only)
   apt:
     package: "{{ packages }}"
@@ -39,6 +46,7 @@
   when: ansible_virtualization_role == "host"
   tags: package
 
+# TODO: Revisit these. Maybe we shouldn't install system-wide
 - name: Install PIP3 Packages
   pip:
     name:
@@ -73,9 +81,10 @@
 ##
 # NFS Share
 ##
-- include_tasks: nfs.yml
-  when: nfsroot is defined and internal_domain is defined
-  tags: nfs
+# TODO: We aren't currently using NFS Shares
+# - include_tasks: nfs.yml
+#   when: nfsroot is defined and internal_domain is defined
+#   tags: nfs
 
 ##
 # SSH Hardening

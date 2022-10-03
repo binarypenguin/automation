@@ -42,3 +42,10 @@
     apply:
       tags:
         - yubico
+
+- name: Install Signal
+  include_tasks:
+    file: software/signal.yml
+    apply:
+      tags:
+        - signal
