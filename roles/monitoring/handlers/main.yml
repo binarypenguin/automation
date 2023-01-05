@@ -1,5 +1,5 @@
 ---
 - name: Reload netdata
-  service:
+  ansible.builtin.service:
     name: netdata
     state: restarted

@@ -1,7 +1,7 @@
 ---
 # Allow everything and enable UFW
 - name: Enable UFW
-  ufw: state=enabled policy=deny logging=on
+  community.general.ufw: state=enabled policy=deny logging=on
   tags:
   - ufw
   - bastion
@@ -12,8 +12,7 @@
 # 30 seconds. See  http://www.debian-administration.org/articles/187
 # for details. Typical usage is:
 - name: Limit SSH Access
-  ufw: rule=limit port=ssh proto=tcp
+  community.general.ufw: rule=limit port=ssh proto=tcp
   tags:
   - ufw
   - bastion
-

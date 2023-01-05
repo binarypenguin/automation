@@ -1,11 +1,11 @@
 ---
 - name: Ensure packages are installed
-  apt:
+  ansible.builtin.apt:
     package: "python3-psutil"
     state: present
 
 - name: Apply profile personalizations for Travis
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: users/travis.yml
     apply:
       become: yes

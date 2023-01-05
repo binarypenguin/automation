@@ -1,6 +1,6 @@
 ---
 - name: Gedit Customizations
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/gedit/preferences/editor/{{ item.key }}"
     value: "{{ item.value }}"
     state: present
@@ -10,7 +10,7 @@
     - { key: 'tab-size', value: "'8'" }
 
 - name: Background Customizations
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/background/{{ item.key }}"
     value: "{{ item.value }}"
     state: present
@@ -20,7 +20,7 @@
     - { key: 'show-desktop-icons', value: "false" }
 
 - name: Remove Desktop Icons
-  dconf:
+  community.general.dconf:
     key: "/org/gnome/shell/extensions/desktop-icons/{{ item.key }}"
     value: "{{ item.value }}"
     state: present

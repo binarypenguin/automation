@@ -1,6 +1,6 @@
 ---
 - name: Ensure packages are installed
-  apt:
+  ansible.builtin.apt:
     packages: "{{ packages }}"
     state: present
   vars:
@@ -9,14 +9,14 @@
     - python-mysqldb
 
 - name: Enable remote connections
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/mysql/mariadb.conf.d/50-server.cnf
     regexp: "^bind-address"
     state: absent
   notify: Reload MySQL
 
 - name: Remove anonymous users
-  mysql_user:
+  community.mysql.mysql_user:
     name: ''
     host: localhost
     state: absent

@@ -2,7 +2,7 @@
 # MOTD Modifications go here
 ##
 - name: Remove help text from MOTD
-  file:
+  ansible.builtin.file:
     path: /etc/update-motd.d/10-help-text
     state: absent
   notify:
@@ -10,7 +10,7 @@
   tags: motd
 
 - name: Add ASCII art banner to MOTD
-  copy:
+  ansible.builtin.copy:
     src: 01-banner
     dest: /etc/update-motd.d
     owner: root

@@ -1,6 +1,6 @@
 ---
 - name: Ensure packages are installed
-  apt:
+  ansible.builtin.apt:
     packages: "{{ packages }}"
     state: present
   vars:
@@ -9,7 +9,7 @@
     - inetutils-inetd
 
 - name: Create boot menu
-  template:
+  ansible.builtin.template:
     src: templates/menu/{{ system.image }}.j2
     dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ system.mac | regex_replace(':','-') }}"
     owner: root
@@ -21,13 +21,13 @@
     loop_var: system
 
 - name: Create preseed folder
-  file:
+  ansible.builtin.file:
     path: /srv/nginx/automation.int.binarypenguin.net/public/preseed/build/
     state: directory
     mode: 0655
 
 - name: Generate preseed
-  template:
+  ansible.builtin.template:
     src: templates/preseed/{{ system.image }}.j2
     dest: "/srv/nginx/automation.int.binarypenguin.net/public/preseed/build/{{ system.name }}.{{ system.domain }}.preseed"
     owner: root

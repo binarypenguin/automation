@@ -1,10 +1,10 @@
 ---
 - name: "Setting netdata src"
-  set_fact:
+  ansible.builtin.set_fact:
     netdata_src: "/usr/src/netdata.git"
 
 - name: Ensure packages are installed
-  apt:
+  ansible.builtin.apt:
     package: "{{ packages }}"
     state: present
   vars:
@@ -24,17 +24,17 @@
 
 #git clone https://github.com/firehol/netdata.git --depth=1
 - name: Clone the netdata repo
-  git:
+  ansible.builtin.git:
     repo: https://github.com/firehol/netdata.git
     depth: 1
     dest: "{{ netdata_src }}"
     version: "{{ netdata.version | default('HEAD') }}"
 
 - name: Install Netdata
-  command: ./netdata-installer.sh --dont-wait --auto-update chdir="{{ netdata_src }}" creates=/usr/sbin/netdata
+  ansible.builtin.command: ./netdata-installer.sh --dont-wait --auto-update chdir="{{ netdata_src }}" creates=/usr/sbin/netdata
 
 - name: Enable Registry mode
-  ini_file:
+  community.general.ini_file:
     path: /etc/netdata/netdata.conf
     backup: yes
     section: registry
@@ -44,7 +44,7 @@
   notify: Reload netdata
 
 - name: Disable Registry mode
-  ini_file:
+  community.general.ini_file:
     path: /etc/netdata/netdata.conf
     backup: yes
     section: registry
@@ -54,7 +54,7 @@
   notify: Reload netdata
 
 - name: Set Registry
-  ini_file:
+  community.general.ini_file:
     path: /etc/netdata/netdata.conf
     backup: yes
     section: registry

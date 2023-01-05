@@ -1,12 +1,12 @@
 ---
 - name: Reload nginx
-  service:
+  ansible.builtin.service:
     name: nginx
     state: restarted
   become: yes
 
 - name: Reload php-fpm
-  service:
+  ansible.builtin.service:
     name: php7.2-fpm
     state: reloaded
   become: yes

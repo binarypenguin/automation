@@ -3,7 +3,7 @@
 # Install Packages
 ##
 - name: Ensure packages are installed
-  apt:
+  ansible.builtin.apt:
     package: "{{ packages }}"
     state: present
   vars:
@@ -36,7 +36,7 @@
     mode: '0755'
 
 - name: Ensure packages are installed (On physical machines only)
-  apt:
+  ansible.builtin.apt:
     package: "{{ packages }}"
     state: present
   vars:
@@ -48,7 +48,7 @@
 
 # TODO: Revisit these. Maybe we shouldn't install system-wide
 - name: Install PIP3 Packages
-  pip:
+  ansible.builtin.pip:
     name:
     - setuptools
     - thefuck
@@ -59,10 +59,10 @@
 ##
 # Preferences
 ##
-- include_tasks: motd.yml
+- ansible.builtin.include_tasks: motd.yml
 
 - name: Enable Colored Prompts
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/profile.d/binarypenguin.sh
     line: "export force_color_prompt=yes"
     mode: "0755"
@@ -71,7 +71,7 @@
 
 # Creates file for aliasing fuck to thefuck
 - name: Add fuck as alias to thefuck in /etc/profile.d/thefuck.sh
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/profile.d/thefuck.sh
     line: "alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
     mode: 0755
@@ -90,7 +90,7 @@
 # SSH Hardening
 ##
 - name: Deploy SSH Config
-  template:
+  ansible.builtin.template:
     src: ../files/sshd_config.j2
     dest: /etc/ssh/sshd_config
     backup: yes
@@ -105,7 +105,7 @@
 # Binary Penguin Scripts
 ##
 - name: Clone Binary Penguin Scripts
-  git:
+  ansible.builtin.git:
     repo: 'https://github.com/binarypenguin/scripts.git'
     dest: /opt/binarypenguin
     update: yes
@@ -114,7 +114,7 @@
   tags: binary-penguin-scripts
 
 - name: Add Binary Penguin Scripts to $PATH
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/profile.d/binarypenguin.sh
     line: "export PATH=$PATH:/opt/binarypenguin/bin"
     mode: "0755"
