@@ -8,9 +8,7 @@
     state: present
   vars:
     packages:
-    - cowsay
     - figlet
-    - fortune
     - git
     - htop
     - iftop
@@ -19,10 +17,8 @@
     - molly-guard
     - mtr
     - ncdu
-    - nfs-common
     - python3-dev
     - python3-pip
-    - rpcbind
     - screen
     - ssh
     - sshfs
@@ -46,15 +42,24 @@
   when: ansible_virtualization_role == "host"
   tags: package
 
-# TODO: Revisit these. Maybe we shouldn't install system-wide
-- name: Install PIP3 Packages
-  ansible.builtin.pip:
-    name:
-    - setuptools
-    - thefuck
-    executable: /usr/bin/pip3
-    state: present
-  tags: pip3
+# TODO: These need moved to be installed at the user level
+# - name: Install PIP3 Packages
+#   ansible.builtin.pip:
+#     name:
+#     - setuptools
+#     - thefuck
+#     executable: /usr/bin/pip3
+#     state: present
+#   tags: pip3
+#
+# Creates file for aliasing fuck to thefuck
+# - name: Add fuck as alias to thefuck in /etc/profile.d/thefuck.sh
+#   ansible.builtin.lineinfile:
+#     dest: /etc/profile.d/thefuck.sh
+#     line: "alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
+#     mode: 0755
+#     create: yes
+#   tags: thefuck
 
 ##
 # Preferences
@@ -69,15 +74,6 @@
     create: yes
   tags: binary-penguin-preferences
 
-# Creates file for aliasing fuck to thefuck
-- name: Add fuck as alias to thefuck in /etc/profile.d/thefuck.sh
-  ansible.builtin.lineinfile:
-    dest: /etc/profile.d/thefuck.sh
-    line: "alias fuck='eval $(thefuck $(fc -ln -1)); history -r'"
-    mode: 0755
-    create: yes
-  tags: thefuck
-
 ##
 # NFS Share
 ##
@@ -89,17 +85,18 @@
 ##
 # SSH Hardening
 ##
-- name: Deploy SSH Config
-  ansible.builtin.template:
-    src: ../files/sshd_config.j2
-    dest: /etc/ssh/sshd_config
-    backup: yes
-    owner: root
-    group: root
-    mode: 0644
-    validate: '/usr/sbin/sshd -T -f %s'
-  notify:
-    - restart sshd
+# TODO: Disabling this for now. Need to stop copying the entire configuration and only change/validate specifics
+# - name: Deploy SSH Config
+#   ansible.builtin.template:
+#     src: ../files/sshd_config.j2
+#     dest: /etc/ssh/sshd_config
+#     backup: yes
+#     owner: root
+#     group: root
+#     mode: 0644
+#     validate: '/usr/sbin/sshd -T -f %s'
+#   notify:
+#     - restart sshd
 
 ##
 # Binary Penguin Scripts

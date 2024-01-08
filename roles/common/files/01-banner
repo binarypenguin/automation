@@ -1,2 +1,5 @@
 #!/bin/bash
 echo -e "\e[0;32m$(figlet -t $(hostname -s))\e[0m"
+if [ -x  "$(command -v lsb_release)" ]; then
+    lsb_release -s -d
+fi
