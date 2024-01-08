@@ -39,9 +39,11 @@
   become: yes
   roles:
     - role: common
-    - role: user_customizations
-      tags:
-        - user_customizations
+    # TODO: These is specific to Gnome.
+    # - role: user_customizations
+    #   tags:
+    #     - user_customizations
+
 # TODO: Needs updated if we are going to continue using netdata
     # - role: monitoring
     #   tags:
@@ -91,10 +93,3 @@
       tags:
         - workstation
 #    - role: tools/composer
-
-# ZNC Bouncer
-- name: znc bouncer configuration
-  hosts: znc
-  become: yes
-  roles:
-    - role: znc
