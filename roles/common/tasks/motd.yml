@@ -6,6 +6,7 @@
     path: /etc/update-motd.d/{{ item }}
     state: absent
   loop:
+    - 00-header
     - 10-help-text
     - 50-motd-news
     - 50-landscape-sysinfo
