@@ -85,18 +85,16 @@
 ##
 # SSH Hardening
 ##
-# TODO: Disabling this for now. Need to stop copying the entire configuration and only change/validate specifics
-# - name: Deploy SSH Config
-#   ansible.builtin.template:
-#     src: ../files/sshd_config.j2
-#     dest: /etc/ssh/sshd_config
-#     backup: yes
-#     owner: root
-#     group: root
-#     mode: 0644
-#     validate: '/usr/sbin/sshd -T -f %s'
-#   notify:
-#     - restart sshd
+- name: Disable password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication '
+    insertafter: '^#PasswordAuthentication '
+    line: PasswordAuthentication no
+    validate: sshd -t %s
+  notify:
+      - restart sshd
+
 
 ##
 # Binary Penguin Scripts
