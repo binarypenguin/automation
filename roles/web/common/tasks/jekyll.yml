@@ -1,27 +1,25 @@
-
-
-#GEM_HOME="$HOME/gems"
-#PATH="$HOME/gems/bin:$PATH"
-
+---
+# GEM_HOME="$HOME/gems"
+# PATH="$HOME/gems/bin:$PATH"
 - name: Jekyll
   block:
     - name: Install Jekyll
       community.general.gem:
         name: jekyll
         state: latest
-        user_install: yes
+        user_install: true
 
     - name: Install Bundler
       community.general.gem:
         name: bundler
         state: latest
-        user_install: yes
+        user_install: true
 
     - name: Install Bundles
       community.general.bundler:
         state: latest
         chdir: "{{ nginx_www_dir }}/{{ team.name }}/{{ site.domainname }}"
-        user_install: True
+        user_install: true
 
     - name: Compile the Jekylls
       community.general.command: jekyll build

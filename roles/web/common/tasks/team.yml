@@ -1,41 +1,45 @@
+---
 - name: Set team facts
-  set_fact:
+  ansible.builtin.set_fact:
     team: "{{ item }}"
     sites: "{{ item.sites }}"
 
 - name: Create Team Group
-  group:
+  ansible.builtin.group:
     name: "www-{{ team.name }}"
-    system: yes
+    system: true
     state: present
 
 - name: Create Team System Account
-  user:
+  ansible.builtin.user:
     name: "www-{{ team.name }}"
     group: "www-{{ team.name }}"
-    system: yes
-    append: yes
+    system: true
+    append: true
     home: "{{ nginx_www_dir }}/{{ team.name }}"
     shell: /bin/bash
     state: present
 
 - name: Create new php-fpm pool for team
-  template:
+  ansible.builtin.template:
     src: templates/www.conf.j2
     dest: /etc/php/7.2/fpm/pool.d/www-{{ team.name }}.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Reload php-fpm
 
-- debug:
+- name: Debug Sites Var
+  ansible.builtin.debug:
     var: sites
 
 - name: Create sites
-  include_tasks: site.yml
+  ansible.builtin.include_tasks: site.yml
   with_items: "{{ sites }}"
   loop_control:
     loop_var: site
 
 - name: Reload nginx
-  service: name=nginx state=reloaded
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded

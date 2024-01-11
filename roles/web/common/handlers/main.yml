@@ -3,10 +3,10 @@
   ansible.builtin.service:
     name: nginx
     state: restarted
-  become: yes
+  become: true
 
 - name: Reload php-fpm
   ansible.builtin.service:
     name: php7.2-fpm
     state: reloaded
-  become: yes
+  become: true

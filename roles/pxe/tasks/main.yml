@@ -1,21 +1,21 @@
 ---
 - name: Ensure packages are installed
   ansible.builtin.apt:
-    packages: "{{ packages }}"
+    package: "{{ packages }}"
     state: present
   vars:
     packages:
-    - tftpd-hpa
-    - inetutils-inetd
+      - tftpd-hpa
+      - inetutils-inetd
 
 - name: Create boot menu
   ansible.builtin.template:
-    src: templates/menu/{{ system.image }}.j2
-    dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ system.mac | regex_replace(':','-') }}"
+    src: "templates/menu/{{ system.image }}.j2"
+    dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ system.mac | regex_replace(':', '-') }}"
     owner: root
     group: root
-    mode: 0644
-    force: True
+    mode: "0644"
+    force: true
   with_items: "{{ systems }}"
   loop_control:
     loop_var: system
@@ -24,7 +24,7 @@
   ansible.builtin.file:
     path: /srv/nginx/automation.int.binarypenguin.net/public/preseed/build/
     state: directory
-    mode: 0655
+    mode: "0655"
 
 - name: Generate preseed
   ansible.builtin.template:
@@ -32,8 +32,8 @@
     dest: "/srv/nginx/automation.int.binarypenguin.net/public/preseed/build/{{ system.name }}.{{ system.domain }}.preseed"
     owner: root
     group: root
-    mode: 0644
-    force: True
+    mode: "0644"
+    force: true
   with_items: "{{ systems }}"
   loop_control:
     loop_var: system

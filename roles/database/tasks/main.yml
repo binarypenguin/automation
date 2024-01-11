@@ -1,12 +1,12 @@
 ---
 - name: Ensure packages are installed
   ansible.builtin.apt:
-    packages: "{{ packages }}"
+    package: "{{ packages }}"
     state: present
   vars:
     packages:
-    - mariadb-server
-    - python-mysqldb
+      - mariadb-server
+      - python-mysqldb
 
 - name: Enable remote connections
   ansible.builtin.lineinfile:

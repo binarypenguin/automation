@@ -1,21 +1,21 @@
 ---
 - name: Ensure packages are installed
-  apt:
+  ansible.builtin.apt:
     package: "{{ packages }}"
     state: present
   vars:
     packages:
-    - cryptsetup
-    - gimp
-    - rsnapshot
-    - terminator
-    - ubuntu-restricted-extras
-    - virt-manager
+      - cryptsetup
+      - gimp
+      - rsnapshot
+      - terminator
+      - ubuntu-restricted-extras
+      - virt-manager
 
 - name: Ensure snaps are installed
-  snap:
+  community.general.snap:
     state: present
-    classic: no
+    classic: false
     name:
       - bitwarden
       - discord
@@ -23,28 +23,28 @@
       - telegram-desktop
 
 - name: Ensure snaps are installed (--classic)
-  snap:
+  community.general.snap:
     state: present
-    classic: yes
+    classic: true
     name:
       - atom
 
 - name: Install Google Software
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: software/google.yml
     apply:
       tags:
         - google
 
 - name: Install Yubico Software
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: software/yubico.yml
     apply:
       tags:
         - yubico
 
 - name: Install Signal
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: software/signal.yml
     apply:
       tags:

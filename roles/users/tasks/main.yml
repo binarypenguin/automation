@@ -1,6 +1,11 @@
 ---
 - name: Update home directory file permissions
-  ansible.builtin.file: owner="{{item.username}}" path="/home/{{item.username}}" group="{{item.username}}" state="directory"
-  with_items: users
   when: users_create_homedirs and users_create_homedirs
+  ansible.builtin.file:
+    owner: "{{ item.username }}"
+    path: "/home/{{ item.username }}"
+    group: "{{ item.username }}"
+    state: "directory"
+    mode: "0700"
+  with_items: "{{ users }}"
   tags: user-management

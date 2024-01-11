@@ -21,13 +21,13 @@
     force: true
 
 - name: Add Signal repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb [arch=amd64 signed-by=/etc/apt/keyrings/signal.asc] https://updates.signal.org/desktop/apt xenial main'
     filename: signal-xenial
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Install Signal
-  apt:
+  ansible.builtin.apt:
     package: signal-desktop
     state: present

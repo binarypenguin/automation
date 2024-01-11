@@ -3,7 +3,7 @@
   hosts: localhost
   tasks:
     - name: Checking Ansible Version
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ ansible_version.full is defined }}"
           - "{{ ansible_version.full is version('2.9', 'gt') }}"
@@ -34,9 +34,9 @@
 
 # Common Configuration
 
-- name: apply common configuration to all nodes
+- name: Apply common configuration to all nodes
   hosts: all
-  become: yes
+  become: true
   roles:
     - role: common
     # TODO: These is specific to Gnome.
@@ -50,34 +50,34 @@
     #     - monitoring
 
 # Bastions Configuration
-- name: bastion configuration
+- name: Bastion configuration
   hosts: bastions
-  become: yes
+  become: true
   roles:
     - role: bastion
 
 # Database Server Configuration
-- name: database server configuration
+- name: Database server configuration
   hosts: database
-  become: yes
+  become: true
   roles:
     - role: database
       tags:
         - database
 
 # PXE Server Configuration
-- name: pxe server configuration
+- name: PXE server configuration
   hosts: pxe
-  become: yes
+  become: true
   roles:
     - role: pxe
       tags:
         - pxe
 
 # Web Server Configuration
-- name: web server configuration
+- name: Web server configuration
   hosts: web
-  become: yes
+  become: true
   roles:
     - role: web/common
       tags:
@@ -85,9 +85,9 @@
     - role: tools/composer
 
 # Workstation Configuration
-- name: workstation configuration
+- name: Workstation configuration
   hosts: workstations
-  become: yes
+  become: true
   roles:
     - role: workstation
       tags:

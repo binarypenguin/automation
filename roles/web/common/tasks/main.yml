@@ -1,52 +1,53 @@
 ---
-- name: Apt Add Lets Encrypt
-  apt_repository:
+- name: Apt for Lets Encrypt
+  ansible.builtin.apt_repository:
     repo: 'ppa:certbot/certbot'
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Ensure packages are installed
-  apt:
+  ansible.builtin.apt:
     package: "{{ packages }}"
     state: present
   vars:
     packages:
-    - nginx
-    - php-fpm
-    - python-mysqldb
-    - python-certbot-nginx
-    - ruby-full
-    - build-essential
-    - zlib1g-dev
+      - nginx
+      - php-fpm
+      - python-mysqldb
+      - python-certbot-nginx
+      - ruby-full
+      - build-essential
+      - zlib1g-dev
 
 - name: Update System Wide Gems
-  shell: gem update --system
+  ansible.builtin.command: gem update --system
+  changed_when: false
 
 - name: Create nginx root directory
-  file:
+  ansible.builtin.file:
     path: /srv/nginx
     state: directory
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
 
 - name: Disable default virtual host
-  file:
+  ansible.builtin.file:
     path: /etc/nginx/sites-enabled/default
     state: absent
 
 - name: Setup systemwide pages
-  include_tasks: system.yml
+  ansible.builtin.include_tasks: system.yml
 
 - name: Create Deploy Key Location
-  file:
+  ansible.builtin.file:
     path: /etc/ssh/deploy_keys
     state: directory
-    mode: 0700
+    mode: "0700"
     owner: root
     group: root
 
 - name: Setup each team
-  include_tasks: team.yml
+  ansible.builtin.include_tasks: team.yml
   # system_teams needs to be first so that it can be overridden by teams (user defined)
   with_items: "{{ system_teams + teams | default([]) }}"

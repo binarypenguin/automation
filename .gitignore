@@ -4,3 +4,5 @@ hosts
 *.retry
 *.log
 venv
+.vscode
+.venv

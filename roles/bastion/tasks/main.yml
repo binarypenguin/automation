@@ -1,10 +1,13 @@
 ---
 # Allow everything and enable UFW
 - name: Enable UFW
-  community.general.ufw: state=enabled policy=deny logging=on
+  community.general.ufw:
+    state: enabled
+    policy: deny
+    logging: true
   tags:
-  - ufw
-  - bastion
+    - ufw
+    - bastion
 
 # ufw supports connection rate limiting, which is useful for protecting
 # against brute-force login attacks. ufw will deny connections if an IP
@@ -12,7 +15,10 @@
 # 30 seconds. See  http://www.debian-administration.org/articles/187
 # for details. Typical usage is:
 - name: Limit SSH Access
-  community.general.ufw: rule=limit port=ssh proto=tcp
+  community.general.ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
   tags:
-  - ufw
-  - bastion
+    - ufw
+    - bastion

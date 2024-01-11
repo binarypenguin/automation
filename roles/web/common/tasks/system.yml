@@ -1,25 +1,25 @@
 ---
 - name: System page config
-  template:
+  ansible.builtin.template:
     src: templates/system.conf.j2
     dest: /etc/nginx/system.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Create available virtual host for all HTTP requests
-  template:
+  ansible.builtin.template:
     src: templates/vhost-http-redirect.j2
     dest: "/etc/nginx/sites-available/00-http-redirect"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Enable virtual hosts for all HTTP requests
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/00-http-redirect"
     dest: "/etc/nginx/sites-enabled/00-http-redirect"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     state: link
