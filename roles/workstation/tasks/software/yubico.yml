@@ -1,0 +1,15 @@
+---
+- name: Add Yubico Repo
+  ansible.builtin.apt_repository:
+    repo: ppa:yubico/stable
+    state: present
+
+- name: Install Yubico Software
+  ansible.builtin.apt:
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - yubikey-manager
+      - yubioath-desktop
+      - yubikey-personalization-gui

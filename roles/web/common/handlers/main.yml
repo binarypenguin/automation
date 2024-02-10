@@ -1,8 +1,12 @@
 ---
 - name: Reload nginx
-  service: name=nginx state=restarted
-  sudo: yes
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  become: true
 
 - name: Reload php-fpm
-  service: name=php7.0-fpm state=reloaded
-  sudo: yes
+  ansible.builtin.service:
+    name: php7.2-fpm
+    state: reloaded
+  become: true

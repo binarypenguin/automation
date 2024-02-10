@@ -3,3 +3,6 @@ hosts
 *.facts
 *.retry
 *.log
+venv
+.vscode
+.venv

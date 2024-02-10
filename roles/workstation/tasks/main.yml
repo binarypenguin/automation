@@ -1,9 +1,51 @@
 ---
-# OS Family Check
-- include_tasks: debian.yml
-  when: ansible_os_family == 'Debian'
-  tags: package
+- name: Ensure packages are installed
+  ansible.builtin.apt:
+    package: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - cryptsetup
+      - gimp
+      - rsnapshot
+      - terminator
+      - ubuntu-restricted-extras
+      - virt-manager
 
-- include_tasks: arch.yml
-  when: ansible_os_family == 'Archlinux'
-  tags: package
+- name: Ensure snaps are installed
+  community.general.snap:
+    state: present
+    classic: false
+    name:
+      - bitwarden
+      - discord
+      - spotify
+      - telegram-desktop
+
+- name: Ensure snaps are installed (--classic)
+  community.general.snap:
+    state: present
+    classic: true
+    name:
+      - atom
+
+- name: Install Google Software
+  ansible.builtin.include_tasks:
+    file: software/google.yml
+    apply:
+      tags:
+        - google
+
+- name: Install Yubico Software
+  ansible.builtin.include_tasks:
+    file: software/yubico.yml
+    apply:
+      tags:
+        - yubico
+
+- name: Install Signal
+  ansible.builtin.include_tasks:
+    file: software/signal.yml
+    apply:
+      tags:
+        - signal

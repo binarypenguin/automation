@@ -16,5 +16,7 @@ system_teams:
   - name: binarypenguin
     sites:
       - domainname: binarypenguin.net
+        ssl_cert: /etc/letsencrypt/live/binarypenguin.net/fullchain.pem
+        ssl_cert_key: /etc/letsencrypt/live/binarypenguin.net/privkey.pem
         type: jekyll
         repo: https://github.com/binarypenguin/binarypenguin.net.git

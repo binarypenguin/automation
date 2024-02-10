@@ -1,0 +1,21 @@
+name: ansible-lint
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+jobs:
+  build:
+    name: Ansible Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Set up Python 3.
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install Requirements
+        run: pip install -r requirements.txt
+      - name: Run ansible-lint
+        run: | 
+          ansible-lint playbook.yml

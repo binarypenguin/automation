@@ -3,61 +3,93 @@
   hosts: localhost
   tasks:
     - name: Checking Ansible Version
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ ansible_version is defined }}"
-          - "{{ ansible_version|version_compare(2.4, '>=') }}"
+          - "{{ ansible_version.full is defined }}"
+          - "{{ ansible_version.full is version('2.9', 'gt') }}"
+          - "{{ ansible_os_family == 'Debian' }}"
+
+# Not sure why this is done on localhost every time...
+    # - name: Update System Package Cache
+    #   apt:
+    #     update_cache: yes
+    #     cache_valid_time: 3600
+    #     force_apt_get: yes
+    #   tags: update_system
+    #
+    # - name: Upgrade System Packages
+    #   apt:
+    #     upgrade: full
+    #     force_apt_get: yes
+    #   tags: update_system
+    #
+    # - name: Remove useless packages from the cache
+    #   apt:
+    #     autoclean: yes
+    #
+    # - name: Remove dependencies that are no longer required
+    #   apt:
+    #     autoremove: yes
+
 
 # Common Configuration
-- name: apply common configuration to all nodes
+
+- name: Apply common configuration to all nodes
   hosts: all
-  become: yes
+  become: true
   roles:
-    - health
-    - common
-    - { role: monitoring, tags: monitoring }
+    - role: common
+    # TODO: These is specific to Gnome.
+    # - role: user_customizations
+    #   tags:
+    #     - user_customizations
+
+# TODO: Needs updated if we are going to continue using netdata
+    # - role: monitoring
+    #   tags:
+    #     - monitoring
 
 # Bastions Configuration
-- name: bastion configuration
+- name: Bastion configuration
   hosts: bastions
-  become: yes
+  become: true
   roles:
-    - bastion
+    - role: bastion
 
 # Database Server Configuration
-- name: database server configuration
+- name: Database server configuration
   hosts: database
-  become: yes
+  become: true
   roles:
-    - { role: database, tags: ['database'] }
+    - role: database
+      tags:
+        - database
 
 # PXE Server Configuration
-- name: pxe server configuration
+- name: PXE server configuration
   hosts: pxe
-  become: yes
+  become: true
   roles:
-    - { role: pxe, tags: ['pxe'] }
+    - role: pxe
+      tags:
+        - pxe
 
 # Web Server Configuration
-- name: web server configuration
+- name: Web server configuration
   hosts: web
-  become: yes
+  become: true
   roles:
-    - { role: web/common, tags: ['web'] }
-    - tools/composer
+    - role: web/common
+      tags:
+        - web
+    - role: tools/composer
 
 # Workstation Configuration
-- name: workstation configuration
+- name: Workstation configuration
   hosts: workstations
-  become: yes
+  become: true
   roles:
-    - workstation
-    - tools/composer
-
-# ZNC Bouncer
-- name: znc bouncer configuration
-  hosts: znc
-  become: yes
-  roles:
-    - znc
-
+    - role: workstation
+      tags:
+        - workstation
+#    - role: tools/composer
