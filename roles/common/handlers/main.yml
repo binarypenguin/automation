@@ -1,9 +1,9 @@
 ---
-- name: Refresh MOTD
+- name: refresh motd
   ansible.builtin.shell: run-parts --lsbsysinit /etc/update-motd.d > /var/run/motd.dynamic
   changed_when: my_output.rc != 0
 
-- name: Restart sshd
+- name: restart sshd
   ansible.builtin.service:
     name: ssh
     state: restarted
