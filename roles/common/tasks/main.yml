@@ -45,7 +45,7 @@
     validate: /usr/sbin/sshd -t -f %s
     state: present
   notify:
-    - restart sshd
+    - Restart sshd
 
 - name: Include MOTD Task
   ansible.builtin.include_tasks: motd.yml
