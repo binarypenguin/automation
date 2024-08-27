@@ -68,7 +68,6 @@
     - role: web/common
       tags:
         - web
-    - role: tools/composer
 
 # Workstation Configuration
 - name: Workstation configuration
@@ -78,4 +77,3 @@
     - role: workstation
       tags:
         - workstation
-#    - role: tools/composer
