@@ -44,13 +44,6 @@
     #   tags:
     #     - user_customizations
 
-# Bastions Configuration
-- name: Bastion configuration
-  hosts: bastions
-  become: true
-  roles:
-    - role: bastion
-
 # Database Server Configuration
 - name: Database server configuration
   hosts: database

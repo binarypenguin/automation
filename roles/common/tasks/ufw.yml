@@ -7,7 +7,6 @@
     logging: true
   tags:
     - ufw
-    - bastion
 
 # ufw supports connection rate limiting, which is useful for protecting
 # against brute-force login attacks. ufw will deny connections if an IP
@@ -21,4 +20,4 @@
     proto: tcp
   tags:
     - ufw
-    - bastion
+

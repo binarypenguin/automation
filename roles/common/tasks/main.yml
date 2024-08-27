@@ -9,8 +9,8 @@
       - git
       - htop
       - iftop
-      - iperf
       - iotop
+      - iperf
       - molly-guard
       - mtr
       - ncdu
@@ -57,6 +57,9 @@
 #     mode: 0755
 #     create: yes
 #   tags: thefuck
+
+- name: Include UFW Tasks
+  ansible.builtin.include_tasks: ufw.yml
 
 ##
 # Preferences
