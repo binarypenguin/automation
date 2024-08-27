@@ -3,61 +3,29 @@
   hosts: localhost
   tasks:
     - name: Checking Ansible Version
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ ansible_version is defined }}"
-          - "{{ ansible_version|version_compare(2.4, '>=') }}"
+          - "{{ ansible_version.full is defined }}"
+          - "{{ ansible_version.full is version('2.9', 'gt') }}"
+          - "{{ ansible_os_family == 'Debian' }}"
 
 # Common Configuration
-- name: apply common configuration to all nodes
+
+- name: Apply common configuration to all nodes
   hosts: all
-  become: yes
+  become: true
   roles:
-    - health
-    - common
-    - { role: monitoring, tags: monitoring }
-
-# Bastions Configuration
-- name: bastion configuration
-  hosts: bastions
-  become: yes
-  roles:
-    - bastion
-
-# Database Server Configuration
-- name: database server configuration
-  hosts: database
-  become: yes
-  roles:
-    - { role: database, tags: ['database'] }
-
-# PXE Server Configuration
-- name: pxe server configuration
-  hosts: pxe
-  become: yes
-  roles:
-    - { role: pxe, tags: ['pxe'] }
-
-# Web Server Configuration
-- name: web server configuration
-  hosts: web
-  become: yes
-  roles:
-    - { role: web/common, tags: ['web'] }
-    - tools/composer
+    - role: common
+    # TODO: These is specific to Gnome.
+    # - role: user_customizations
+    #   tags:
+    #     - user_customizations
 
 # Workstation Configuration
-- name: workstation configuration
+- name: Workstation configuration
   hosts: workstations
-  become: yes
+  become: true
   roles:
-    - workstation
-    - tools/composer
-
-# ZNC Bouncer
-- name: znc bouncer configuration
-  hosts: znc
-  become: yes
-  roles:
-    - znc
-
+    - role: workstation
+      tags:
+        - workstation
