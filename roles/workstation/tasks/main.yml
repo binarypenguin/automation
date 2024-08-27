@@ -8,13 +8,6 @@
       - gimp
       - terminator
 
-- name: Install Google Software
-  ansible.builtin.include_tasks:
-    file: software/google.yml
-    apply:
-      tags:
-        - google
-
 - name: Install Yubico Software
   ansible.builtin.include_tasks:
     file: software/yubico.yml

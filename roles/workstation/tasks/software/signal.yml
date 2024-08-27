@@ -14,15 +14,14 @@
 # sudo apt update && sudo apt install signal-desktop
 
 - name: Add Signal key
-  ansible.builtin.get_url:
+  ansible.builtin.apt_key:
     url: https://updates.signal.org/desktop/apt/keys.asc
-    dest: /etc/apt/keyrings/signal.asc
-    mode: '0644'
-    force: true
+    keyring: /etc/apt/keyrings/signal.gpg
+    state: present
 
 - name: Add Signal repo
   ansible.builtin.apt_repository:
-    repo: 'deb [arch=amd64 signed-by=/etc/apt/keyrings/signal.asc] https://updates.signal.org/desktop/apt xenial main'
+    repo: 'deb [arch=amd64 signed-by=/etc/apt/keyrings/signal.gpg] https://updates.signal.org/desktop/apt xenial main'
     filename: signal-xenial
     state: present
     update_cache: true
