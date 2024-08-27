@@ -1,8 +1,0 @@
-error_page 403 /system/error/403.html;
-error_page 404 /system/error/404.html;
-error_page 405 /system/error/405.html;
-error_page 500 501 502 503 504 /system/error/5xx.html;
-
-location /system {
-  alias {{ nginx_www_dir }}/{{ system_default_team }}/{{ system_default_site }}/_site/system;
-}
