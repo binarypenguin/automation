@@ -65,15 +65,6 @@
       tags:
         - database
 
-# PXE Server Configuration
-- name: PXE server configuration
-  hosts: pxe
-  become: true
-  roles:
-    - role: pxe
-      tags:
-        - pxe
-
 # Web Server Configuration
 - name: Web server configuration
   hosts: web
