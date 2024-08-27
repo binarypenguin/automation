@@ -1,13 +1,4 @@
 ---
-# Allow everything and enable UFW
-- name: Enable UFW
-  community.general.ufw:
-    state: enabled
-    policy: deny
-    logging: true
-  tags:
-    - ufw
-
 # ufw supports connection rate limiting, which is useful for protecting
 # against brute-force login attacks. ufw will deny connections if an IP
 # address has attempted to initiate 6 or more connections in the last
@@ -21,3 +12,10 @@
   tags:
     - ufw
 
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: deny
+    logging: true
+  tags:
+    - ufw

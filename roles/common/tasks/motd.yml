@@ -1,6 +1,4 @@
-##
-# MOTD Modifications go here
-##
+---
 - name: Remove help text from MOTD
   ansible.builtin.file:
     path: /etc/update-motd.d/{{ item }}
