@@ -5,29 +5,8 @@
     state: present
   vars:
     packages:
-      - cryptsetup
       - gimp
-      - rsnapshot
       - terminator
-      - ubuntu-restricted-extras
-      - virt-manager
-
-- name: Ensure snaps are installed
-  community.general.snap:
-    state: present
-    classic: false
-    name:
-      - bitwarden
-      - discord
-      - spotify
-      - telegram-desktop
-
-- name: Ensure snaps are installed (--classic)
-  community.general.snap:
-    state: present
-    classic: true
-    name:
-      - atom
 
 - name: Install Google Software
   ansible.builtin.include_tasks:
