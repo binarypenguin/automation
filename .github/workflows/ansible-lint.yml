@@ -17,5 +17,5 @@ jobs:
       - name: Install Requirements
         run: pip install -r requirements.txt
       - name: Run ansible-lint
-        run: | 
+        run: |
           ansible-lint playbook.yml

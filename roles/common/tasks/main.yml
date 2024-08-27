@@ -36,7 +36,7 @@
 - name: Include UFW Tasks
   ansible.builtin.include_tasks: ufw.yml
 
-- name: sshd - Disable password authentication
+- name: SSHD - Disable password authentication
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^PasswordAuthentication '

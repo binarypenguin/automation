@@ -58,7 +58,7 @@
   hosts: web
   become: true
   roles:
-    - role: web/common
+    - role: web
       tags:
         - web
 
