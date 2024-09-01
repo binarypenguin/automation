@@ -7,6 +7,7 @@
     packages:
       - gimp
       - terminator
+      - rpi-imager
 
 - name: Install Yubico Software
   ansible.builtin.include_tasks:
@@ -30,3 +31,4 @@
       - md.obsidian.Obsidian
       - org.mozilla.firefox
       - org.telegram.desktop
+      - com.visualstudio.code
