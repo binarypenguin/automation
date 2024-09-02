@@ -7,6 +7,7 @@
     packages:
       - gimp
       - terminator
+      - rpi-imager
 
 - name: Install Yubico Software
   ansible.builtin.include_tasks:
@@ -21,3 +22,13 @@
     apply:
       tags:
         - signal
+
+- name: Install flatpak packages
+  community.general.flatpak:
+    name:
+      - com.discordapp.Discord
+      - com.spotify.Client
+      - md.obsidian.Obsidian
+      - org.mozilla.firefox
+      - org.telegram.desktop
+      - com.visualstudio.code
