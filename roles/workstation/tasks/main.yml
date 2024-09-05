@@ -5,9 +5,11 @@
     state: present
   vars:
     packages:
+      - curl
       - gimp
-      - terminator
+      - kdeconnect
       - rpi-imager
+      - terminator
 
 - name: Install Yubico Software
   ansible.builtin.include_tasks:
