@@ -10,6 +10,8 @@
       - kdeconnect
       - rpi-imager
       - terminator
+      - flatpak
+      - plasma-discover-backend-flatpak
 
 - name: Install Yubico Software
   ansible.builtin.include_tasks:
@@ -24,6 +26,12 @@
     apply:
       tags:
         - signal
+
+- name: Add flathub as remote
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
 
 - name: Install flatpak packages
   community.general.flatpak:
