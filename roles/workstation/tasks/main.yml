@@ -13,19 +13,26 @@
       - flatpak
       - plasma-discover-backend-flatpak
 
-- name: Install Yubico Software
-  ansible.builtin.include_tasks:
-    file: software/yubico.yml
-    apply:
-      tags:
-        - yubico
-
 - name: Install Signal
   ansible.builtin.include_tasks:
     file: software/signal.yml
     apply:
       tags:
         - signal
+
+- name: Install Steam
+  ansible.builtin.include_tasks:
+    file: software/steam.yml
+    apply:
+      tags:
+        - steam
+
+- name: Install Yubico Software
+  ansible.builtin.include_tasks:
+    file: software/yubico.yml
+    apply:
+      tags:
+        - yubico
 
 - name: Add flathub as remote
   community.general.flatpak_remote:
