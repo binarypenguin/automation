@@ -49,3 +49,5 @@
       - org.mozilla.firefox
       - org.telegram.desktop
       - com.visualstudio.code
+  notify:
+    - Refresh Plasma

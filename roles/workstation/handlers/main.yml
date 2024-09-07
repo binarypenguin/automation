@@ -1,0 +1,4 @@
+---
+- name: Refresh Plasma
+  ansible.builtin.shell: kquitapp5 plasmashell || killall plasmashell && kstart5 plasmashell
+  changed_when: my_output.rc != 0
