@@ -5,9 +5,27 @@
     state: present
   vars:
     packages:
+      - curl
       - gimp
-      - terminator
+      - kdeconnect
       - rpi-imager
+      - terminator
+      - flatpak
+      - plasma-discover-backend-flatpak
+
+- name: Install Signal
+  ansible.builtin.include_tasks:
+    file: software/signal.yml
+    apply:
+      tags:
+        - signal
+
+- name: Install Steam
+  ansible.builtin.include_tasks:
+    file: software/steam.yml
+    apply:
+      tags:
+        - steam
 
 - name: Install Yubico Software
   ansible.builtin.include_tasks:
@@ -16,12 +34,11 @@
       tags:
         - yubico
 
-- name: Install Signal
-  ansible.builtin.include_tasks:
-    file: software/signal.yml
-    apply:
-      tags:
-        - signal
+- name: Add flathub as remote
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
 
 - name: Install flatpak packages
   community.general.flatpak:
@@ -32,3 +49,13 @@
       - org.mozilla.firefox
       - org.telegram.desktop
       - com.visualstudio.code
+  notify:
+    - Refresh Plasma
+
+- name: Add zfs-load-key@.service
+  ansible.builtin.copy:
+    src: zfs-load-key@.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: u+rwx,g=rx,o=rx
