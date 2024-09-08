@@ -51,3 +51,11 @@
       - com.visualstudio.code
   notify:
     - Refresh Plasma
+
+- name: Add zfs-load-key@.service
+  ansible.builtin.copy:
+    src: zfs-load-key@.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: u+rwx,g=rx,o=rx
