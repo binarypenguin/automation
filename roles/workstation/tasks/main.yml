@@ -47,6 +47,7 @@
       - com.spotify.Client
       - md.obsidian.Obsidian
       - org.mozilla.firefox
+      - org.remmina.Remmina
       - org.telegram.desktop
       - com.visualstudio.code
   notify:
