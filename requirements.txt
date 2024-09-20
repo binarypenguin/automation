@@ -6,7 +6,7 @@ ansible-vault==2.1.0
 attrs==24.2.0
 black==24.8.0
 bracex==2.5
-cffi==1.17.0
+cffi==1.17.1
 click==8.1.7
 cryptography==43.0.1
 enrich==1.2.7
