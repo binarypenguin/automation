@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "NOTICE: Before proceeding with the reboot or shutdown, ensure this host is placed into maintenance mode."
+echo "Failure to do so may result in unnecessary alarms or alerts."
+read -p "Press ENTER to confirm this host is in maintenance mode and you're ready to continue..." waitforinput
+clear
