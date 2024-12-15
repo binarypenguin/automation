@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     package: molly-guard
     state: present
-  
+
 - name: Add maintenance reminder
   ansible.builtin.copy:
     src: 20-uptime-kuma
