@@ -1,0 +1,13 @@
+---
+- name: Ensure molly-guard is installed
+  ansible.builtin.apt:
+    package: molly-guard
+    state: present
+
+- name: Add maintenance reminder
+  ansible.builtin.copy:
+    src: 20-uptime-kuma
+    dest: /etc/molly-guard/run.d
+    owner: root
+    group: root
+    mode: u+rwx,g=rx,o=rx

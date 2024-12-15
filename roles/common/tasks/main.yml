@@ -11,7 +11,6 @@
       - iftop
       - iotop
       - iperf
-      - molly-guard
       - mtr
       - ncdu
       - python3-dev
@@ -50,6 +49,9 @@
 
 - name: Include MOTD Task
   ansible.builtin.include_tasks: motd.yml
+
+- name: Include molly-guard task
+  ansible.builtin.include_tasks: molly-guard.yml
 
 - name: Create /etc/apt/keyrings folder
   ansible.builtin.file:
