@@ -36,6 +36,12 @@
 - name: Include UFW Tasks
   ansible.builtin.include_tasks: ufw.yml
 
+- name: Ensure SSH service is enabled and running
+  service:
+    name: ssh
+    state: started
+    enabled: true
+
 - name: SSHD - Disable password authentication
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
