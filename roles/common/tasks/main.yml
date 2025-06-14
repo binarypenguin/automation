@@ -37,7 +37,7 @@
   ansible.builtin.include_tasks: ufw.yml
 
 - name: Ensure SSH service is enabled and running
-  service:
+  ansible.builtin.service:
     name: ssh
     state: started
     enabled: true
