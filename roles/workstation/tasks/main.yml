@@ -27,6 +27,13 @@
       tags:
         - steam
 
+- name: Install GH CLI
+  ansible.builtin.include_tasks:
+    file: software/gh.yml
+    apply:
+      tags:
+        - gh
+
 - name: Add flathub as remote
   community.general.flatpak_remote:
     name: flathub
