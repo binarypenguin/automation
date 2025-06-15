@@ -44,7 +44,7 @@
       - org.remmina.Remmina
       - org.telegram.desktop
       - com.visualstudio.code
-      - com.yubico.yubioath #The ppa version stopped working.
+      - com.yubico.yubioath # The ppa version stopped working.
   notify:
     - Refresh KDE application database
 
