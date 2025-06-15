@@ -2,5 +2,25 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>binarypenguin/.github:renovate-config"
+  ],
+  "packageRules": [
+    {
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch-digest",
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "minimumReleaseAge": "1 day",
+      "automerge": true,
+      "automergeType": "branch",
+      "automergeSchedule": [
+        "* 0-3 * * *"
+      ],
+      "matchPackageNames": [
+        "*"
+      ]
+    }
   ]
 }
