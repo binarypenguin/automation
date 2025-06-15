@@ -1,5 +1,3 @@
 ---
-- name: Refresh Plasma
-  ansible.builtin.shell: kquitapp5 plasmashell || killall plasmashell && kstart5 plasmashell
-  register: refresh_plasma
-  changed_when: refresh_plasma.rc != 0
+- name: Refresh KDE application database
+  ansible.builtin.command: kbuildsycoca5

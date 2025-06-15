@@ -27,13 +27,6 @@
       tags:
         - steam
 
-- name: Install Yubico Software
-  ansible.builtin.include_tasks:
-    file: software/yubico.yml
-    apply:
-      tags:
-        - yubico
-
 - name: Add flathub as remote
   community.general.flatpak_remote:
     name: flathub
@@ -43,6 +36,7 @@
 - name: Install flatpak packages
   community.general.flatpak:
     name:
+      - com.bitwarden.desktop
       - com.discordapp.Discord
       - com.spotify.Client
       - md.obsidian.Obsidian
@@ -50,8 +44,9 @@
       - org.remmina.Remmina
       - org.telegram.desktop
       - com.visualstudio.code
+      - com.yubico.yubioath #The ppa version stopped working.
   notify:
-    - Refresh Plasma
+    - Refresh KDE application database
 
 - name: Add zfs-load-key@.service
   ansible.builtin.copy:
