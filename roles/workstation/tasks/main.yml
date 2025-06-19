@@ -7,11 +7,17 @@
     packages:
       - curl
       - gimp
-      - kdeconnect
       - rpi-imager
       - terminator
       - flatpak
       - plasma-discover-backend-flatpak
+
+- name: Install KDE Connect
+  ansible.builtin.include_tasks:
+    file: software/kdeconnect.yml
+    apply:
+      tags:
+        - kdeconnect
 
 - name: Install Signal
   ansible.builtin.include_tasks:
