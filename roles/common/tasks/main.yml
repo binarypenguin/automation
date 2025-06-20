@@ -1,25 +1,34 @@
 ---
-- name: Ensure packages are installed
+- name: Ensure minimal packages are installed
   ansible.builtin.apt:
-    package: "{{ packages }}"
+    package: "{{ minimal_packages }}"
     state: present
   vars:
-    packages:
+    minimal_packages:
       - figlet
       - git
       - htop
       - iftop
       - iotop
+      - ncdu
+      - ssh
+      - uptimed
+  tags: package
+
+- name: Ensure additional packages are installed on standard hosts
+  ansible.builtin.apt:
+    package: "{{ standard_packages }}"
+    state: present
+  when: security_profile | default('standard') != 'minimal'
+  vars:
+    standard_packages:
       - iperf
       - mtr
-      - ncdu
       - python3-dev
       - python3-pip
       - python3-venv
       - screen
-      - ssh
       - sshfs
-      - uptimed
   tags: package
 
 - name: Ensure packages are installed (On physical machines only)
@@ -33,25 +42,8 @@
   when: ansible_virtualization_role == "host"
   tags: package
 
-- name: Include UFW Tasks
-  ansible.builtin.include_tasks: ufw.yml
-
-- name: Ensure SSH service is enabled and running
-  ansible.builtin.service:
-    name: ssh
-    state: started
-    enabled: true
-
-- name: SSHD - Disable password authentication
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^PasswordAuthentication '
-    insertafter: '^#PasswordAuthentication '
-    line: 'PasswordAuthentication no'
-    validate: /usr/sbin/sshd -t -f %s
-    state: present
-  notify:
-    - Restart sshd
+- name: Enable SSH
+  ansible.builtin.include_tasks: ssh.yml
 
 - name: Include MOTD Task
   ansible.builtin.include_tasks: motd.yml

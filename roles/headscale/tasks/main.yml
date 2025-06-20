@@ -1,0 +1,43 @@
+---
+- name: Start and enable headscale service
+  ansible.builtin.systemd:
+    name: headscale
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: Check headscale service status
+  ansible.builtin.systemd:
+    name: headscale
+  register: headscale_service
+
+- name: Assert headscale service is running and enabled
+  ansible.builtin.assert:
+    that:
+      - headscale_service.status.ActiveState == "active"
+      - headscale_service.status.SubState == "running"
+      - headscale_service.status.UnitFileState == "enabled"
+    fail_msg: '''
+      headscale service is not properly configured.
+        ActiveState: {{ headscale_service.status.ActiveState }},
+        SubState: {{ headscale_service.status.SubState }},
+        UnitFileState: {{ headscale_service.status.UnitFileState }}
+        '''
+    success_msg: "headscale service is running and enabled for automatic startup"
+
+- name: Allow HTTPS (443) for headscale web interface
+  community.general.ufw:
+    rule: allow
+    port: '443'
+    proto: tcp
+    comment: 'Headscale Web Interface'
+  when: headscale_service.status.UnitFileState == "enabled"
+
+- name: Allow headscale prometheus metrics from monitoring server
+  community.general.ufw:
+    rule: allow
+    port: '9090'
+    proto: tcp
+    from_ip: '10.24.0.11'
+    comment: 'Headscale Prometheus Metrics'
+  when: headscale_service.status.UnitFileState == "enabled"

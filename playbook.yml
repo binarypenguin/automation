@@ -21,6 +21,16 @@
     #   tags:
     #     - user_customizations
 
+
+# Headscale Configuration
+- name: Headscale configuration
+  hosts: headscale
+  become: true
+  roles:
+    - role: headscale
+      tags:
+        - headscale
+
 # Workstation Configuration
 - name: Workstation configuration
   hosts: workstations
@@ -29,3 +39,17 @@
     - role: workstation
       tags:
         - workstation
+
+# Enable Firewall
+- name: Enable firewall
+  hosts: all
+  become: true
+  tasks:
+    - name: Enable UFW with default deny policy
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        logging: true
+      tags:
+        - firewall
+        - security
