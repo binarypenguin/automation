@@ -1,10 +1,31 @@
 ---
+- name: Ensure ssh is installed
+  ansible.builtin.apt:
+    package: ssh
+    state: present
+
 - name: Ensure SSH service is enabled and running
   ansible.builtin.service:
     name: ssh
     state: started
     enabled: true
   tags: ssh
+
+- name: Check authorized_keys for critical users
+  ansible.builtin.stat:
+    path: "/home/{{ item }}/.ssh/authorized_keys"
+  register: user_keys_results
+  loop:
+    - travis
+    - "{{ ansible_env.USER }}"
+  when: item != 'root'
+  failed_when: false
+
+- name: Ensure at least one user has authorized_keys
+  ansible.builtin.assert:
+    that: user_keys_results.results | json_query('[?stat.exists]') | length > 0
+    fail_msg: "No SSH keys found for any critical users!"
+    success_msg: "At least one user has SSH keys configured"
 
 - name: SSHD - Disable password authentication
   ansible.builtin.lineinfile:
