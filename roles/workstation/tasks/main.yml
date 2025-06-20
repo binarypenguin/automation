@@ -6,11 +6,18 @@
   vars:
     packages:
       - curl
+      - flatpak
       - gimp
+      - kde-config-flatpak
+      - plasma-discover-backend-flatpak
       - rpi-imager
       - terminator
-      - flatpak
-      - plasma-discover-backend-flatpak
+
+- name: Add flathub as remote
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
 
 - name: Install KDE Connect
   ansible.builtin.include_tasks:
@@ -40,24 +47,18 @@
       tags:
         - gh
 
-- name: Add flathub as remote
-  community.general.flatpak_remote:
-    name: flathub
-    state: present
-    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-
 - name: Install flatpak packages
   community.general.flatpak:
     name:
       - com.bitwarden.desktop
       - com.discordapp.Discord
       - com.spotify.Client
+      - com.visualstudio.code
+      - com.yubico.yubioath # The ppa version stopped working.
       - md.obsidian.Obsidian
       - org.mozilla.firefox
       - org.remmina.Remmina
       - org.telegram.desktop
-      - com.visualstudio.code
-      - com.yubico.yubioath # The ppa version stopped working.
   notify:
     - Refresh KDE application database
 

@@ -1,5 +1,5 @@
 ---
-- name: Refresh KDE application database including Flatpak apps
+- name: Refresh KDE application database
   ansible.builtin.command: kbuildsycoca5 --noincremental
   register: refresh_plasma
   changed_when: true

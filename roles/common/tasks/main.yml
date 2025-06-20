@@ -37,8 +37,9 @@
     state: present
   vars:
     packages:
-      - smartmontools
       - memtester
+      - smartmontools
+      - zfsutils-linux
   when: ansible_virtualization_role == "host"
   tags: package
 
@@ -65,17 +66,6 @@
     create: true
   tags: binary-penguin-preferences
 
-##
-# NFS Share
-##
-# TODO: We aren't currently using NFS Shares
-# - include_tasks: nfs.yml
-#   when: nfsroot is defined and internal_domain is defined
-#   tags: nfs
-
-##
-# Binary Penguin Scripts
-##
 - name: Clone Binary Penguin Scripts
   ansible.builtin.git:
     repo: 'https://github.com/binarypenguin/scripts.git'
