@@ -15,20 +15,17 @@
       "minimumReleaseAge": "1 day",
       "automerge": true,
       "automergeType": "branch",
-      "automergeSchedule": ["* 0-3 * * *"],
-      "matchPackageNames": ["*"]
+      "automergeSchedule": [
+        "* 0-3 * * *"
+      ],
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
-      "description": "Loosen pip constraints",
+      "description": "Loosen pip version constraints",
       "matchManagers": ["pip_requirements"],
       "rangeStrategy": "bump"
-    },
-    {
-      "description": "Use pip-compile if applicable",
-      "matchManagers": ["pip_requirements"],
-      "pip-compile": {
-        "enabled": true
-      }
     }
   ]
 }
