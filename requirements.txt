@@ -5,7 +5,7 @@ ansible-lint==25.6.1
 ansible-vault==4.1.0
 attrs==24.3.0
 black==24.10.0
-bracex==2.5.post1
+bracex==2.6
 cffi==1.17.1
 click==8.2.1
 cryptography==44.0.3
@@ -23,10 +23,10 @@ packaging==24.2
 pathspec==0.12.1
 platformdirs==4.3.8
 pycparser==2.22
-Pygments==2.19.1
+Pygments==2.19.2
 PyYAML==6.0.2
 referencing==0.36.2
-resolvelib==1.1.0
+resolvelib==1.2.0
 rich==13.9.4
 rpds-py==0.25.1
 ruamel.yaml==0.18.14
