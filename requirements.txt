@@ -25,7 +25,7 @@ platformdirs==4.5.0
 pycparser==2.23
 Pygments==2.19.2
 PyYAML==6.0.3
-referencing==0.36.2
+referencing==0.37.0
 resolvelib==1.2.1
 rich==13.9.4
 rpds-py==0.27.1
