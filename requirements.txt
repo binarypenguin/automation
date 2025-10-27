@@ -27,7 +27,7 @@ Pygments==2.19.2
 PyYAML==6.0.3
 referencing==0.37.0
 resolvelib==1.2.1
-rich==13.9.4
+rich==14.2.0
 rpds-py==0.28.0
 ruamel.yaml==0.18.16
 ruamel.yaml.clib==0.2.14
