@@ -10,7 +10,7 @@ cffi==1.17.1
 click==8.3.0
 cryptography==44.0.3
 enrich==1.2.7
-filelock==3.20.0
+filelock==3.20.3
 importlib_metadata==8.7.0
 Jinja2==3.1.6
 jsonschema==4.25.1
