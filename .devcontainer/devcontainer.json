@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "Ansible Automation",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.ansible",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "ansible.python.interpreterPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}
