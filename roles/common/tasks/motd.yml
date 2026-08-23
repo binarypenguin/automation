@@ -1,4 +1,12 @@
 ---
+- name: Remove the static Debian login banner
+  ansible.builtin.copy:
+    content: ""
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: Remove help text from MOTD
   ansible.builtin.file:
     path: /etc/update-motd.d/{{ item }}

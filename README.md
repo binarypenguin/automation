@@ -20,3 +20,16 @@ Installs a few common utilities on each machine.
 ## Workstation
 Installs Workstation only application.
 
+## Updating Python dependencies
+
+Direct dependencies are maintained in `requirements.in`. The fully pinned `requirements.txt` file is generated with [`pip-tools`](https://pip-tools.readthedocs.io/) and should not be edited manually.
+
+To update all dependencies:
+
+```bash
+python -m pip install --upgrade pip pip-tools
+pip-compile --upgrade requirements.in
+python -m pip install --upgrade -r requirements.txt
+```
+
+Commit both `requirements.in` and the regenerated `requirements.txt`.
