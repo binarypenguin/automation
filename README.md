@@ -21,8 +21,9 @@ Python dependencies from `requirements.txt` and Galaxy collections from
 4. After changing either requirements file or the container configuration, run
    **Dev Containers: Rebuild Container**.
 
-The container installs the Red Hat Ansible and YAML extensions and configures
-the Ansible extension to use `/usr/local/bin/python`.
+The container installs the Codex, Red Hat Ansible, and YAML extensions and
+configures the Ansible extension to use `/usr/local/bin/python`. Sign in to
+Codex when prompted after the container opens.
 
 > [!WARNING]
 > Inside the dev container, `localhost` and `127.0.0.1` refer to the container,

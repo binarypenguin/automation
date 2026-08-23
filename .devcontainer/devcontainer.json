@@ -9,6 +9,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "openai.chatgpt",
         "redhat.ansible",
         "redhat.vscode-yaml"
       ],
