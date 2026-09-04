@@ -10,4 +10,4 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@main
+        uses: ansible/ansible-lint@da68a70d7686164e7e9aa098e850b56c8d858209 # main
