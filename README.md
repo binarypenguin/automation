@@ -47,7 +47,9 @@ ansible-playbook --syntax-check -i inventories/localhost/hosts playbook.yml
 
 To apply the playbook to an intended inventory, use an interactive container
 terminal. Add `--ask-vault-pass` when encrypted variables are required;
-become-password prompting is enabled by `ansible.cfg`.
+Ansible connects as `travis` by default, and become-password prompting is
+enabled by `ansible.cfg`. Set `ansible_user` for hosts that use a different SSH
+account.
 
 ```bash
 ansible-playbook -i inventories/<inventory>/hosts playbook.yml --ask-vault-pass

@@ -10,5 +10,3 @@ RUN python -m pip install \
         --requirements-file /tmp/automation-requirements/requirements.yml \
         --collections-path /usr/share/ansible/collections \
     && rm -rf /tmp/automation-requirements
-
-USER vscode

@@ -5,7 +5,11 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "remoteUser": "vscode",
+  "containerUser": "root",
+  "remoteUser": "root",
+  "securityOpt": [
+    "seccomp=unconfined"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
