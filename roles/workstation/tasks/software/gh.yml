@@ -19,12 +19,31 @@
   when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Add GitHub CLI APT repository
-  ansible.builtin.apt_repository:
-    repo: "deb [arch={{ workstation_deb_arch }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
-    filename: github-cli
+  ansible.builtin.deb822_repository:
+    name: github-cli
+    types: [deb]
+    uris: [https://cli.github.com/packages]
+    suites: [stable]
+    components: [main]
+    architectures: ["{{ workstation_deb_arch }}"]
+    signed_by: /etc/apt/keyrings/githubcli-archive-keyring.gpg
     state: present
-    update_cache: true
+  register: workstation_gh_repo
   when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Remove legacy GitHub CLI APT source
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/github-cli.list
+    state: absent
+  register: workstation_gh_legacy_repo
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Refresh APT cache after GitHub CLI repository changes
+  ansible.builtin.apt:
+    update_cache: true
+  when:
+    - ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+    - workstation_gh_repo.changed or workstation_gh_legacy_repo.changed
 
 - name: Add GitHub CLI RPM repository
   ansible.builtin.get_url:

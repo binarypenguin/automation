@@ -1,19 +1,38 @@
 ---
 # https://repo.steampowered.com/steam/
 - name: Add Steam key
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://repo.steampowered.com/steam/archive/stable/steam.gpg
-    keyring: /etc/apt/keyrings/steam.gpg
-    state: present
+    dest: /etc/apt/keyrings/steam.gpg
+    mode: '0644'
   when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Add Steam repo
-  ansible.builtin.apt_repository:
-    repo: 'deb [arch=amd64 signed-by=/etc/apt/keyrings/steam.gpg] https://repo.steampowered.com/steam/ stable steam'
-    filename: steam-stable
+  ansible.builtin.deb822_repository:
+    name: steam-stable
+    types: [deb]
+    uris: [https://repo.steampowered.com/steam/]
+    suites: [stable]
+    components: [steam]
+    architectures: [amd64]
+    signed_by: /etc/apt/keyrings/steam.gpg
     state: present
-    update_cache: true
+  register: workstation_steam_repo
   when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Remove legacy Steam APT source
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/steam-stable.list
+    state: absent
+  register: workstation_steam_legacy_repo
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Refresh APT cache after Steam repository changes
+  ansible.builtin.apt:
+    update_cache: true
+  when:
+    - ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+    - workstation_steam_repo.changed or workstation_steam_legacy_repo.changed
 
 - name: Install Fedora's curated third-party repository definitions
   ansible.builtin.package:

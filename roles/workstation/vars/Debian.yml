@@ -7,5 +7,6 @@ workstation_packages:
   - gimp
   - kde-config-flatpak
   - plasma-discover-backend-flatpak
+  - python3-debian
   - rpi-imager
   - terminator
