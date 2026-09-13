@@ -1,0 +1,20 @@
+---
+common_ssh_service: sshd
+common_sshd_binary: /usr/bin/sshd
+
+common_minimal_packages:
+  - figlet
+  - git
+  - htop
+  - iftop
+  - iotop-c
+  - ncdu
+  - openssh-server
+
+common_standard_packages:
+  - fuse-sshfs
+  - iperf
+  - mtr
+  - python3-devel
+  - python3-pip
+  - screen

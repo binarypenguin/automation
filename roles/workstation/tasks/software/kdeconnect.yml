@@ -1,7 +1,7 @@
 ---
-- name: Ensure kdeconnect is installed
-  ansible.builtin.apt:
-    package: kdeconnect
+- name: Ensure KDE Connect is installed
+  ansible.builtin.package:
+    name: "{{ workstation_kde_connect_package }}"
     state: present
 
 - name: Allow KDE Connect protocols from trusted networks
@@ -14,7 +14,9 @@
   with_nested:
     - ["10.24.0.0/24", "100.64.0.0/10"]
     - ["tcp", "udp"]
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Reload UFW
   community.general.ufw:
     state: reloaded
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']

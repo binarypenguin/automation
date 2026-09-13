@@ -1,17 +1,13 @@
 ---
-- name: Ensure packages are installed
-  ansible.builtin.apt:
-    package: "{{ packages }}"
+- name: Load workstation package names for the host OS
+  ansible.builtin.include_vars:
+    file: "{{ 'Debian' if ansible_facts['os_family'] == 'Debian' else ansible_facts['distribution'] }}.yml"
+  tags: always
+
+- name: Ensure workstation packages are installed
+  ansible.builtin.package:
+    name: "{{ workstation_packages }}"
     state: present
-  vars:
-    packages:
-      - curl
-      - flatpak
-      - gimp
-      - kde-config-flatpak
-      - plasma-discover-backend-flatpak
-      - rpi-imager
-      - terminator
 
 - name: Add flathub as remote
   community.general.flatpak_remote:
@@ -25,13 +21,6 @@
     apply:
       tags:
         - kdeconnect
-
-- name: Install Signal
-  ansible.builtin.include_tasks:
-    file: software/signal.yml
-    apply:
-      tags:
-        - signal
 
 - name: Install Steam
   ansible.builtin.include_tasks:
@@ -47,6 +36,21 @@
       tags:
         - gh
 
+- name: Check for KDE Frameworks 6 application cache tool
+  ansible.builtin.stat:
+    path: /usr/bin/kbuildsycoca6
+  register: workstation_kbuildsycoca6
+
+- name: Check for KDE Frameworks 5 application cache tool
+  ansible.builtin.stat:
+    path: /usr/bin/kbuildsycoca5
+  register: workstation_kbuildsycoca5
+
+- name: Ensure a KDE application cache tool is installed
+  ansible.builtin.assert:
+    that: workstation_kbuildsycoca6.stat.exists or workstation_kbuildsycoca5.stat.exists
+    fail_msg: "Neither kbuildsycoca6 nor kbuildsycoca5 is installed."
+
 - name: Install flatpak packages
   community.general.flatpak:
     name:
@@ -58,6 +62,7 @@
       - md.obsidian.Obsidian
       - org.mozilla.firefox
       - org.remmina.Remmina
+      - org.signal.Signal
       - org.telegram.desktop
   notify:
     - Refresh KDE application database

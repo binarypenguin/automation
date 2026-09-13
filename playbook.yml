@@ -5,9 +5,8 @@
     - name: Checking Ansible Version
       ansible.builtin.assert:
         that:
-          - "{{ ansible_version.full is defined }}"
-          - "{{ ansible_version.full is version('2.9', 'gt') }}"
-          # - "{{ ansible_os_family == 'Debian' }}"
+          - ansible_version.full is defined
+          - ansible_version.full is version('2.9', 'gt')
 
 # Common Configuration
 
@@ -50,6 +49,7 @@
         state: enabled
         policy: deny
         logging: true
+      when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
       tags:
         - firewall
         - security

@@ -5,6 +5,7 @@
     url: https://repo.steampowered.com/steam/archive/stable/steam.gpg
     keyring: /etc/apt/keyrings/steam.gpg
     state: present
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Add Steam repo
   ansible.builtin.apt_repository:
@@ -12,9 +13,26 @@
     filename: steam-stable
     state: present
     update_cache: true
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Install Fedora's curated third-party repository definitions
+  ansible.builtin.package:
+    name: fedora-workstation-repositories
+    state: present
+  when: ansible_facts['distribution'] == 'Fedora'
+
+- name: Enable the RPM Fusion Steam repository
+  community.general.ini_file:
+    path: /etc/yum.repos.d/rpmfusion-nonfree-steam.repo
+    section: rpmfusion-nonfree-steam
+    option: enabled
+    value: '1'
+    no_extra_spaces: true
+    create: false
+    mode: '0644'
+  when: ansible_facts['distribution'] == 'Fedora'
 
 - name: Install Steam
-  ansible.builtin.apt:
-    package:
-      - steam-launcher
+  ansible.builtin.package:
+    name: "{{ 'steam' if ansible_facts['distribution'] == 'Fedora' else 'steam-launcher' }}"
     state: present

@@ -1,0 +1,23 @@
+---
+common_ssh_service: ssh
+common_sshd_binary: /usr/sbin/sshd
+
+common_minimal_packages:
+  - figlet
+  - git
+  - htop
+  - iftop
+  - iotop
+  - ncdu
+  - ssh
+  - ufw
+  - uptimed
+
+common_standard_packages:
+  - iperf
+  - mtr
+  - python3-dev
+  - python3-pip
+  - python3-venv
+  - screen
+  - sshfs

@@ -1,45 +1,37 @@
 ---
+- name: Check supported package distributions
+  ansible.builtin.assert:
+    that: ansible_facts['distribution'] in ['Debian', 'Ubuntu', 'Fedora']
+    fail_msg: "No common package list is defined for {{ ansible_facts['distribution'] }}."
+  tags: always
+
+- name: Load package names for the host OS
+  ansible.builtin.include_vars:
+    file: "{{ 'Debian' if ansible_facts['os_family'] == 'Debian' else ansible_facts['distribution'] }}.yml"
+  tags: always
+
 - name: Ensure minimal packages are installed
-  ansible.builtin.apt:
-    package: "{{ minimal_packages }}"
+  ansible.builtin.package:
+    name: "{{ common_minimal_packages }}"
     state: present
-  vars:
-    minimal_packages:
-      - figlet
-      - git
-      - htop
-      - iftop
-      - iotop
-      - ncdu
-      - ssh
-      - uptimed
   tags: package
 
 - name: Ensure additional packages are installed on standard hosts
-  ansible.builtin.apt:
-    package: "{{ standard_packages }}"
+  ansible.builtin.package:
+    name: "{{ common_standard_packages }}"
     state: present
-  when: security_profile | default('standard') != 'minimal'
-  vars:
-    standard_packages:
-      - iperf
-      - mtr
-      - python3-dev
-      - python3-pip
-      - python3-venv
-      - screen
-      - sshfs
+  when:
+    - security_profile | default('standard') != 'minimal'
   tags: package
 
 - name: Ensure packages are installed (On physical machines only)
-  ansible.builtin.apt:
-    package: "{{ packages }}"
-    state: present
-  vars:
-    packages:
+  ansible.builtin.package:
+    name:
       - memtester
       - smartmontools
-  when: ansible_virtualization_role == "host"
+    state: present
+  when:
+    - ansible_facts['virtualization_role'] == "host"
   tags: package
 
 - name: Enable SSH
@@ -47,15 +39,18 @@
 
 - name: Include MOTD Task
   ansible.builtin.include_tasks: motd.yml
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Include molly-guard task
   ansible.builtin.include_tasks: molly-guard.yml
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Create /etc/apt/keyrings folder
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Enable Colored Prompts
   ansible.builtin.lineinfile:

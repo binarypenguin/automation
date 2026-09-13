@@ -31,7 +31,9 @@
     port: '443'
     proto: tcp
     comment: 'Headscale Web Interface'
-  when: headscale_service.status.UnitFileState == "enabled"
+  when:
+    - ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+    - headscale_service.status.UnitFileState == "enabled"
 
 - name: Allow headscale prometheus metrics from monitoring server
   community.general.ufw:
@@ -40,4 +42,6 @@
     proto: tcp
     from_ip: '10.24.0.11'
     comment: 'Headscale Prometheus Metrics'
-  when: headscale_service.status.UnitFileState == "enabled"
+  when:
+    - ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+    - headscale_service.status.UnitFileState == "enabled"

@@ -1,0 +1,11 @@
+---
+workstation_kde_connect_package: kde-connect
+
+workstation_packages:
+  - curl
+  - flatpak
+  - flatpak-kcm
+  - gimp
+  - plasma-discover-flatpak
+  - rpi-imager
+  - terminator
