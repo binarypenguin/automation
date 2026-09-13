@@ -39,7 +39,6 @@
     packages:
       - memtester
       - smartmontools
-      - zfsutils-linux
   when: ansible_virtualization_role == "host"
   tags: package
 
