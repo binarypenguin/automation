@@ -1,0 +1,46 @@
+---
+- name: Check supported monitoring distributions
+  ansible.builtin.assert:
+    that: ansible_facts['distribution'] in ['Debian', 'Ubuntu', 'Fedora']
+    fail_msg: "No monitoring package list is defined for {{ ansible_facts['distribution'] }}."
+  tags: always
+
+- name: Load monitoring package names for the host OS
+  ansible.builtin.include_vars:
+    file: "{{ 'Debian' if ansible_facts['os_family'] == 'Debian' else ansible_facts['distribution'] }}.yml"
+  tags: always
+
+- name: Set monitoring defaults
+  ansible.builtin.set_fact:
+    monitoring_tailscale_interface_name: "{{ monitoring_tailscale_interface | default('tailscale0') }}"
+    monitoring_node_exporter_port_number: "{{ monitoring_node_exporter_port | default(9100) }}"
+  tags: always
+
+- name: Set Tailscale monitoring state
+  ansible.builtin.set_fact:
+    monitoring_tailscale_ipv4_address: "{{ ansible_facts.get(monitoring_tailscale_interface_name, {}).get('ipv4', {}).get('address', '') }}"
+  tags: always
+
+- name: Install Prometheus node exporter
+  ansible.builtin.package:
+    name: "{{ monitoring_node_exporter_package }}"
+    state: present
+  when: monitoring_tailscale_ipv4_address | length > 0
+
+- name: Configure node exporter
+  ansible.builtin.template:
+    src: prometheus-node-exporter.j2
+    dest: "{{ monitoring_node_exporter_defaults_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: monitoring_tailscale_ipv4_address | length > 0
+  notify:
+    - Restart node exporter
+
+- name: Enable Prometheus node exporter
+  ansible.builtin.service:
+    name: "{{ monitoring_node_exporter_service }}"
+    state: started
+    enabled: true
+  when: monitoring_tailscale_ipv4_address | length > 0

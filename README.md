@@ -73,6 +73,14 @@ ansible-galaxy collection install -r requirements.yml
 
 Installs a few common utilities on each machine.
 
+### Monitoring
+
+Installs Prometheus node exporter on Debian, Ubuntu, and Fedora hosts that have
+a Tailscale interface. The exporter binds to the Tailscale IPv4 address on
+port `9100` by default, so hosts without `tailscale0` are skipped. Override
+`monitoring_tailscale_interface` or `monitoring_node_exporter_port` in inventory
+when needed.
+
 ### Workstation
 
 Installs Workstation only application.

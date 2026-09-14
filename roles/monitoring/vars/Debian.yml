@@ -1,0 +1,4 @@
+---
+monitoring_node_exporter_package: prometheus-node-exporter
+monitoring_node_exporter_service: prometheus-node-exporter
+monitoring_node_exporter_defaults_file: /etc/default/prometheus-node-exporter

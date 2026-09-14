@@ -20,6 +20,15 @@
     #   tags:
     #     - user_customizations
 
+# Monitoring Configuration
+- name: Apply monitoring configuration to all nodes
+  hosts: all
+  become: true
+  roles:
+    - role: monitoring
+      tags:
+        - monitoring
+
 
 # Headscale Configuration
 - name: Headscale configuration

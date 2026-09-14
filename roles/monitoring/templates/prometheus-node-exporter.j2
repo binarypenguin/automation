@@ -1,0 +1,1 @@
+ARGS="--web.listen-address={{ monitoring_tailscale_ipv4_address }}:{{ monitoring_node_exporter_port_number }}{% if monitoring_node_exporter_extra_args is defined %} {{ monitoring_node_exporter_extra_args }}{% endif %}"
