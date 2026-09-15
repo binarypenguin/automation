@@ -64,11 +64,7 @@
         architectures: "{{ docker_apt_architecture }}"
         signed_by: "{{ docker_apt_keyring }}"
       register: docker_apt_repository
-
-    - name: Update APT cache after adding Docker repository
-      ansible.builtin.apt:
-        update_cache: true
-      when: docker_apt_repository.changed
+      notify: Update Docker APT cache
 
 - name: Add Docker DNF repository
   ansible.builtin.get_url:
@@ -78,6 +74,9 @@
     group: root
     mode: "0644"
   when: ansible_facts['distribution'] == 'Fedora'
+
+- name: Apply Docker repository changes
+  ansible.builtin.meta: flush_handlers
 
 - name: Install Docker packages
   ansible.builtin.package:

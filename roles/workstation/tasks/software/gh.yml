@@ -1,16 +1,30 @@
 ---
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Install GitHub CLI APT prerequisites
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - python3-debian
+    state: present
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
 - name: Create APT keyrings directory
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
-    mode: '0755'
+    mode: "0755"
   when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Download GitHub CLI GPG key
   ansible.builtin.get_url:
     url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
     dest: /etc/apt/keyrings/githubcli-archive-keyring.gpg
-    mode: '0644'
+    mode: "0644"
   when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
 
 - name: Normalize architecture name for APT
@@ -41,15 +55,16 @@
 - name: Refresh APT cache after GitHub CLI repository changes
   ansible.builtin.apt:
     update_cache: true
+  changed_when: false
   when:
     - ansible_facts['distribution'] in ['Debian', 'Ubuntu']
-    - workstation_gh_repo.changed or workstation_gh_legacy_repo.changed
+    - (workstation_gh_repo is defined and workstation_gh_repo.changed) or (workstation_gh_legacy_repo is defined and workstation_gh_legacy_repo.changed)
 
 - name: Add GitHub CLI RPM repository
   ansible.builtin.get_url:
     url: https://cli.github.com/packages/rpm/gh-cli.repo
     dest: /etc/yum.repos.d/gh-cli.repo
-    mode: '0644'
+    mode: "0644"
   when: ansible_facts['distribution'] == 'Fedora'
 
 - name: Ensure GitHub CLI is installed
