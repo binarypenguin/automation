@@ -29,6 +29,15 @@
       tags:
         - monitoring
 
+# Docker Configuration
+- name: Docker configuration
+  hosts: docker_hosts
+  become: true
+  roles:
+    - role: docker
+      tags:
+        - docker
+
 
 # Headscale Configuration
 - name: Headscale configuration

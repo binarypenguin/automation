@@ -81,6 +81,13 @@ port `9100` by default, so hosts without `tailscale0` are skipped. Override
 `monitoring_tailscale_interface` or `monitoring_node_exporter_port` in inventory
 when needed.
 
+### Docker
+
+Installs Docker Engine from Docker's official repositories on hosts in the
+`docker_hosts` inventory group. The role enables and starts `docker.service`,
+then verifies that the service is running, enabled, and reachable through the
+Docker CLI. Users are not added to the `docker` group; run Docker with `sudo`.
+
 ### Workstation
 
 Installs Workstation only application.

@@ -1,0 +1,30 @@
+---
+docker_apt_architecture: "{{ docker_apt_architecture_map[ansible_facts['architecture']] | default(ansible_facts['architecture']) }}"
+
+docker_apt_architecture_map:
+  aarch64: arm64
+  armv7l: armhf
+  ppc64le: ppc64el
+  x86_64: amd64
+
+docker_conflicting_packages:
+  - containerd
+  - docker-buildx
+  - docker-compose
+  - docker-compose-v2
+  - docker-doc
+  - docker.io
+  - podman-docker
+  - runc
+
+docker_prerequisite_packages:
+  - ca-certificates
+  - curl
+  - python3-debian
+
+docker_packages:
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-ce
+  - docker-ce-cli
+  - docker-compose-plugin
