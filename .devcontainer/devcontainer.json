@@ -7,6 +7,9 @@
   },
   "containerUser": "root",
   "remoteUser": "root",
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh/binary-penguin-pull-app.2026-09-14.private-key.pem,target=/run/secrets/binary-penguin-pull-app.pem,type=bind,readonly"
+  ],
   "securityOpt": [
     "seccomp=unconfined"
   ],

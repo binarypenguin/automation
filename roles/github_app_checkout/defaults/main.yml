@@ -1,0 +1,3 @@
+---
+github_app_checkout_repositories: []
+github_app_checkout_private_key_path: /run/secrets/binary-penguin-pull-app.pem

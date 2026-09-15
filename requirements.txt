@@ -64,6 +64,8 @@ platformdirs==4.11.3
     # via black
 pycparser==3.0
     # via cffi
+pyjwt==2.14.0
+    # via -r requirements.in
 pytokens==0.4.1
     # via black
 pyyaml==6.0.3

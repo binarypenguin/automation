@@ -88,6 +88,16 @@ Installs Docker Engine from Docker's official repositories on hosts in the
 then verifies that the service is running, enabled, and reachable through the
 Docker CLI. Users are not added to the `docker` group; run Docker with `sudo`.
 
+### GitHub App Checkout
+
+Checks out private GitHub repositories on hosts in the
+`github_app_checkout_hosts` inventory group by minting a short-lived GitHub App
+installation token from a PEM file mounted into the Ansible controller at
+`/run/secrets/binary-penguin-pull-app.pem`. The token is passed to
+`ansible.builtin.git` for the checkout and is not persisted on the managed host.
+Set `github_app_checkout_app_id`, `github_app_checkout_installation_id`, and
+`github_app_checkout_repositories` in inventory.
+
 ### Workstation
 
 Installs Workstation only application.

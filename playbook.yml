@@ -38,6 +38,15 @@
       tags:
         - docker
 
+# GitHub App Checkout Configuration
+- name: GitHub App checkout configuration
+  hosts: github_app_checkout_hosts
+  become: true
+  roles:
+    - role: github_app_checkout
+      tags:
+        - github-app-checkout
+
 
 # Headscale Configuration
 - name: Headscale configuration

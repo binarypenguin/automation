@@ -1,0 +1,71 @@
+---
+- name: Validate GitHub App checkout configuration
+  ansible.builtin.assert:
+    that:
+      - github_app_checkout_app_id is defined
+      - github_app_checkout_app_id | string | length > 0
+      - github_app_checkout_installation_id is defined
+      - github_app_checkout_installation_id | string | length > 0
+      - github_app_checkout_private_key_path is defined
+      - github_app_checkout_private_key_path | string | length > 0
+      - github_app_checkout_repositories | length > 0
+    fail_msg: "Set github_app_checkout_app_id, github_app_checkout_installation_id, github_app_checkout_private_key_path, and github_app_checkout_repositories."
+  tags: always
+
+- name: Check controller GitHub App private key
+  ansible.builtin.stat:
+    path: "{{ github_app_checkout_private_key_path }}"
+  delegate_to: localhost
+  become: false
+  register: github_app_checkout_private_key
+
+- name: Ensure controller GitHub App private key exists
+  ansible.builtin.assert:
+    that:
+      - github_app_checkout_private_key.stat.exists
+      - github_app_checkout_private_key.stat.isreg
+    fail_msg: "GitHub App private key is missing on the controller at {{ github_app_checkout_private_key_path }}."
+
+- name: Ensure Git is installed
+  ansible.builtin.package:
+    name: git
+    state: present
+
+- name: Create checkout directories
+  ansible.builtin.file:
+    path: "{{ item.dest }}"
+    state: directory
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default(item.owner | default('root')) }}"
+    mode: "0755"
+  loop: "{{ github_app_checkout_repositories }}"
+  loop_control:
+    label: "{{ item.name | default(item.repo) }} -> {{ item.dest }}"
+
+- name: Checkout GitHub App repositories
+  ansible.builtin.git:
+    repo: "https://github.com/{{ item.repo }}.git"
+    dest: "{{ item.dest }}"
+    version: "{{ item.version | default('main') }}"
+    force: "{{ item.force | default(false) }}"
+  environment:
+    GIT_CONFIG_COUNT: "1"
+    GIT_CONFIG_KEY_0: http.https://github.com/.extraheader
+    GIT_CONFIG_VALUE_0: "Authorization: Basic {{ ('x-access-token:' ~ github_app_checkout_token) | b64encode }}"
+    GIT_TERMINAL_PROMPT: "0"
+  vars:
+    github_app_checkout_token: >-
+      {{
+        lookup(
+          'community.general.github_app_access_token',
+          app_id=github_app_checkout_app_id,
+          installation_id=github_app_checkout_installation_id,
+          key_path=github_app_checkout_private_key_path
+        )
+      }}
+  no_log: true
+  become: true
+  become_user: "{{ item.owner | default('root') }}"
+  loop: "{{ github_app_checkout_repositories }}"
+  loop_control:
+    label: "{{ item.name | default(item.repo) }} -> {{ item.dest }}"
