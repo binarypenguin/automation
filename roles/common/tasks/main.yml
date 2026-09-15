@@ -10,6 +10,13 @@
     file: "{{ 'Debian' if ansible_facts['os_family'] == 'Debian' else ansible_facts['distribution'] }}.yml"
   tags: always
 
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+  tags: package
+
 - name: Ensure minimal packages are installed
   ansible.builtin.package:
     name: "{{ common_minimal_packages }}"
