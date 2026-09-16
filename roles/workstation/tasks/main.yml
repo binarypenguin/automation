@@ -60,7 +60,6 @@
       - com.visualstudio.code
       - com.yubico.yubioath # The ppa version stopped working.
       - md.obsidian.Obsidian
-      - org.mozilla.firefox
       - org.remmina.Remmina
       - org.signal.Signal
       - org.telegram.desktop
