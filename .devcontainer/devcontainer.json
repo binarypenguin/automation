@@ -8,8 +8,13 @@
   "containerUser": "root",
   "remoteUser": "root",
   "mounts": [
-    "source=${localEnv:HOME}/.ssh/binary-penguin-pull-app.2026-09-14.private-key.pem,target=/run/secrets/binary-penguin-pull-app.pem,type=bind,readonly"
+    "source=${localEnv:HOME}/.ssh/binary-penguin-pull-app.2026-09-14.private-key.pem,target=/run/secrets/binary-penguin-pull-app.pem,type=bind,readonly",
+    "source=automation-codex,target=/root/.codex,type=volume"
   ],
+
+  // Binds the parent directory so both repos are mounted into the container side-by-side
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspaces,type=bind",
   "securityOpt": [
     "seccomp=unconfined"
   ],

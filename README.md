@@ -4,10 +4,20 @@ A few simple [Ansible](https://docs.ansible.com) roles I use on my home network 
 
 ## Getting started
 
-Clone the repository and create an inventory as needed. Each inventory can be a
-subdirectory of `inventories`; see the
-[Ansible inventory documentation](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html).
-Review `playbook.yml` for the available host groups and their assigned roles.
+Clone this repository and the `automation-inventory` repository side by side:
+
+```text
+parent-directory/
+|-- automation/
+`-- automation-inventory/
+```
+
+The default inventory is `../automation-inventory/production/hosts`; its host and
+group variables live alongside it in the `production` directory. Additional
+inventories can be stored in subdirectories there. See the
+[Ansible inventory documentation](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html)
+and review `playbook.yml` for the available host groups and their assigned
+roles.
 
 ### VS Code dev container
 
@@ -42,7 +52,7 @@ ssh-add -l
 Run a safe syntax check without contacting managed hosts:
 
 ```bash
-ansible-playbook --syntax-check -i inventories/localhost/hosts playbook.yml
+ansible-playbook --syntax-check -i ../automation-inventory/localhost/hosts playbook.yml
 ```
 
 To apply the playbook to an intended inventory, use an interactive container
@@ -52,7 +62,7 @@ enabled by `ansible.cfg`. Set `ansible_user` for hosts that use a different SSH
 account.
 
 ```bash
-ansible-playbook -i inventories/<inventory>/hosts playbook.yml --ask-vault-pass
+ansible-playbook -i ../automation-inventory/<inventory>/hosts playbook.yml --ask-vault-pass
 ```
 
 ### Local virtual environment

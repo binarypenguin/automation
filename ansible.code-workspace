@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "Ansible Playbooks",
+      "path": "."
+    },
+    {
+      "name": "Ansible Inventory",
+      "path": "../automation-inventory"
+    },
+    {
+      "name": "Antarctica",
+      "path": "../antarctica"
+    }
+  ],
+  "settings": {
+    "ansible.ansible.path": "/usr/local/bin/ansible",
+    "ansible.inventory": "../automation-inventory/production/hosts",
+    "ansible.mcpServer.enabled": true
+  }
+}
