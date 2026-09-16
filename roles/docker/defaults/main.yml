@@ -1,3 +1,4 @@
 ---
 docker_apt_keyring: /etc/apt/keyrings/docker.asc
 docker_service: docker
+docker_rootless: false

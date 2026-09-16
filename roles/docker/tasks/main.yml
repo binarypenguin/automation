@@ -91,9 +91,11 @@
     name: "{{ docker_service }}"
     state: started
     enabled: true
+  when: not docker_rootless | bool
 
 - name: Gather service facts
   ansible.builtin.service_facts:
+  when: not docker_rootless | bool
 
 - name: Ensure Docker service is running and enabled
   ansible.builtin.assert:
@@ -102,7 +104,9 @@
       - ansible_facts['services']['docker.service']['state'] == 'running'
       - ansible_facts['services']['docker.service']['status'] == 'enabled'
     fail_msg: "Docker service is not installed, running, and enabled."
+  when: not docker_rootless | bool
 
 - name: Check Docker CLI can reach the daemon
   ansible.builtin.command: docker version
   changed_when: false
+  when: not docker_rootless | bool
