@@ -65,11 +65,3 @@
       - org.telegram.desktop
   notify:
     - Refresh KDE application database
-
-- name: Add zfs-load-key@.service
-  ansible.builtin.copy:
-    src: zfs-load-key@.service
-    dest: /etc/systemd/system/
-    owner: root
-    group: root
-    mode: u+rwx,g=rx,o=rx
