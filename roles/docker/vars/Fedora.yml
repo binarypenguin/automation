@@ -20,3 +20,8 @@ docker_packages:
   - docker-ce
   - docker-ce-cli
   - docker-compose-plugin
+
+docker_rootless_packages:
+  - acl
+  - docker-ce-rootless-extras
+  - shadow-utils

@@ -94,9 +94,30 @@ when needed.
 ### Docker
 
 Installs Docker Engine from Docker's official repositories on hosts in the
-`docker_hosts` inventory group. The role enables and starts `docker.service`,
-then verifies that the service is running, enabled, and reachable through the
-Docker CLI. Users are not added to the `docker` group; run Docker with `sudo`.
+`docker_hosts` inventory group. By default, the role enables and checks the
+system Docker service. Users are not added to the `docker` group; run rootful
+Docker with `sudo`.
+
+For rootless Docker, set the mode and accounts in that host's `host_vars` file:
+
+```yaml
+docker_rootless: true
+docker_rootless_users:
+  - name: frigate
+    uid: 1500
+```
+
+Each UID is required, unique on the host, and between 1500 and 1599. The role
+stops and disables the system Docker service and socket, creates the accounts
+under `/home`, enables lingering, and starts each user's Docker service. The
+role leaves subordinate ID allocation to the host's account tools and preserves
+existing assignments. Keep each home on a local filesystem with enough space
+for Docker's default data directory, `~/.local/share/docker`. Put Compose files
+in a user-owned directory such as `/home/frigate/compose/frigate/compose.yaml`,
+and run `docker compose` as that user from the project directory (for example,
+`sudo -iu frigate` followed by `cd ~/compose/frigate && docker compose up -d`).
+Keep large persistent bind-mounted data on a suitable separate filesystem if
+needed, with permissions that allow the rootless account to access it.
 
 ### GitHub App Checkout
 

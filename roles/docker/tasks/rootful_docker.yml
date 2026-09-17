@@ -1,0 +1,21 @@
+---
+- name: Enable Docker service
+  ansible.builtin.service:
+    name: "{{ docker_service }}"
+    state: started
+    enabled: true
+
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Ensure Docker service is running and enabled
+  ansible.builtin.assert:
+    that:
+      - "'docker.service' in ansible_facts['services']"
+      - ansible_facts['services']['docker.service']['state'] == 'running'
+      - ansible_facts['services']['docker.service']['status'] == 'enabled'
+    fail_msg: "Docker service is not installed, running, and enabled."
+
+- name: Check Docker CLI can reach the daemon
+  ansible.builtin.command: docker version
+  changed_when: false

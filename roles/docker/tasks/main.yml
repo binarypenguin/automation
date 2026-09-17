@@ -10,6 +10,35 @@
     file: "{{ 'Debian' if ansible_facts['os_family'] == 'Debian' else ansible_facts['distribution'] }}.yml"
   tags: always
 
+- name: Require rootless Docker users in host vars
+  ansible.builtin.assert:
+    that:
+      - docker_rootless_users is defined
+      - docker_rootless_users | default([]) | length > 0
+    fail_msg: "Set docker_rootless_users with name and uid in this host's host_vars file."
+  when: docker_rootless | bool
+
+- name: Validate rootless Docker users
+  ansible.builtin.assert:
+    that:
+      - item.name is defined
+      - item.name | default('') is match('^[a-z_][a-z0-9_-]*$')
+      - item.name | default('') not in ['root', 'docker']
+      - item.uid is integer
+      - item.uid | default(-1) | int >= 1500
+      - item.uid | default(-1) | int <= 1599
+    fail_msg: "Each rootless Docker user needs a valid name other than root or docker and an integer UID from 1500 to 1599."
+  loop: "{{ docker_rootless_users | default([]) }}"
+  when: docker_rootless | bool
+
+- name: Require unique rootless Docker names and UIDs
+  ansible.builtin.assert:
+    that:
+      - docker_rootless_users | map(attribute='name') | unique | list | length == docker_rootless_users | length
+      - docker_rootless_users | map(attribute='uid') | unique | list | length == docker_rootless_users | length
+    fail_msg: "Rootless Docker user names and UIDs must be unique on each host."
+  when: docker_rootless | bool
+
 - name: Update APT cache
   ansible.builtin.apt:
     update_cache: true
@@ -86,27 +115,10 @@
     - docker
     - package
 
-- name: Enable Docker service
-  ansible.builtin.service:
-    name: "{{ docker_service }}"
-    state: started
-    enabled: true
+- name: Configure rootful Docker
+  ansible.builtin.import_tasks: rootful_docker.yml
   when: not docker_rootless | bool
 
-- name: Gather service facts
-  ansible.builtin.service_facts:
-  when: not docker_rootless | bool
-
-- name: Ensure Docker service is running and enabled
-  ansible.builtin.assert:
-    that:
-      - "'docker.service' in ansible_facts['services']"
-      - ansible_facts['services']['docker.service']['state'] == 'running'
-      - ansible_facts['services']['docker.service']['status'] == 'enabled'
-    fail_msg: "Docker service is not installed, running, and enabled."
-  when: not docker_rootless | bool
-
-- name: Check Docker CLI can reach the daemon
-  ansible.builtin.command: docker version
-  changed_when: false
-  when: not docker_rootless | bool
+- name: Configure rootless Docker
+  ansible.builtin.import_tasks: rootless_docker.yml
+  when: docker_rootless | bool

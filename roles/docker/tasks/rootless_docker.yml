@@ -1,0 +1,91 @@
+---
+- name: Install rootless Docker prerequisites
+  ansible.builtin.package:
+    name: "{{ docker_rootless_packages }}"
+    state: present
+
+- name: Stop and disable the rootful Docker socket and service
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  loop:
+    - docker.socket
+    - docker.service
+
+- name: Remove any stale rootful Docker socket
+  ansible.builtin.file:
+    path: /run/docker.sock
+    state: absent
+
+- name: Create rootless Docker users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    home: "/home/{{ item.name }}"
+    create_home: true
+    shell: /bin/bash
+    state: present
+  loop: "{{ docker_rootless_users }}"
+
+- name: Keep rootless Docker home directories private
+  ansible.builtin.file:
+    path: "/home/{{ item.name }}"
+    state: directory
+    owner: "{{ item.name }}"
+    mode: "0700"
+  loop: "{{ docker_rootless_users }}"
+
+- name: Enable lingering for rootless Docker users
+  ansible.builtin.command:
+    argv:
+      - loginctl
+      - enable-linger
+      - "{{ item.name }}"
+    creates: "/var/lib/systemd/linger/{{ item.name }}"
+  loop: "{{ docker_rootless_users }}"
+
+- name: Start rootless Docker user managers
+  ansible.builtin.systemd_service:
+    name: "user@{{ item.uid }}.service"
+    state: started
+  loop: "{{ docker_rootless_users }}"
+
+- name: Install rootless Docker for each user
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/dockerd-rootless-setuptool.sh
+      - install
+    creates: "/home/{{ item.name }}/.config/systemd/user/docker.service"
+  become: true
+  become_user: "{{ item.name }}"
+  environment:
+    HOME: "/home/{{ item.name }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ item.uid }}/bus"
+  loop: "{{ docker_rootless_users }}"
+
+- name: Enable and start rootless Docker user services
+  ansible.builtin.systemd_service:
+    name: docker.service
+    scope: user
+    state: started
+    enabled: true
+  become: true
+  become_user: "{{ item.name }}"
+  environment:
+    HOME: "/home/{{ item.name }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ item.uid }}/bus"
+  loop: "{{ docker_rootless_users }}"
+
+- name: Check each rootless Docker daemon is reachable
+  ansible.builtin.command: docker --context rootless version
+  become: true
+  become_user: "{{ item.name }}"
+  environment:
+    HOME: "/home/{{ item.name }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ item.uid }}/bus"
+  changed_when: false
+  loop: "{{ docker_rootless_users }}"
