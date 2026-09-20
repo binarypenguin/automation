@@ -67,7 +67,12 @@ To apply the playbook to the production inventory, use an interactive container
 terminal. Add `--ask-vault-pass` when encrypted variables are required;
 Ansible connects as `travis` by default, and become-password prompting is
 enabled by `ansible.cfg`. Set `ansible_user` for hosts that use a different SSH
-account.
+account. The playbook disables SSH password authentication and root login.
+Before those changes, it requires a non-root login account with an
+`authorized_keys` file containing a non-comment entry. Verify key-based login
+from a second terminal before running it. On Debian and Ubuntu,
+it stages and checks a UFW SSH rule before enabling the default deny policy.
+Review any existing UFW rules before applying the playbook.
 
 ```bash
 ansible-playbook -i ../automation-inventory/production/inventory.yml playbook.yml --ask-vault-pass

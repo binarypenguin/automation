@@ -71,6 +71,37 @@
   hosts: all
   become: true
   tasks:
+    - name: Stage an SSH rate limit rule before enabling UFW
+      community.general.ufw:
+        rule: limit
+        port: ssh
+        proto: tcp
+        comment: 'SSH rate limiting'
+      when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+      tags: [firewall, security, ufw]
+
+    - name: Check the staged SSH rule with UFW
+      community.general.ufw:
+        rule: limit
+        port: ssh
+        proto: tcp
+        comment: 'SSH rate limiting'
+      check_mode: true
+      register: firewall_ssh_rule_check
+      when:
+        - ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+        - not ansible_check_mode
+      tags: [firewall, security, ufw]
+
+    - name: Require the SSH rule before enabling UFW
+      ansible.builtin.assert:
+        that: not firewall_ssh_rule_check.changed
+        fail_msg: "UFW has no SSH rate limit rule; refusing to enable the default deny policy."
+      when:
+        - ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+        - not ansible_check_mode
+      tags: [firewall, security, ufw]
+
     - name: Enable UFW with default deny policy
       community.general.ufw:
         state: enabled

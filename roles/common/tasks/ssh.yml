@@ -6,46 +6,54 @@
     enabled: true
   tags: ssh
 
-- name: Check authorized_keys for critical users
-  ansible.builtin.stat:
-    path: "/home/{{ item }}/.ssh/authorized_keys"
-  register: common_user_keys_results
-  loop:
-    - travis
-    - "{{ ansible_facts['env']['USER'] }}"
-  when: item != 'root'
-  failed_when: false
+- name: Determine the SSH login account
+  ansible.builtin.command: id -un
+  become: false
+  register: common_ssh_login_account
+  changed_when: false
+  tags: always
 
-- name: Read existing authorized_keys files
-  ansible.builtin.slurp:
-    src: "{{ item }}"
-  loop: >-
-    {{ common_user_keys_results.results
-       | selectattr('stat', 'defined')
-       | selectattr('stat.exists')
-       | map(attribute='stat.path')
-       | unique | list }}
-  register: common_authorized_keys_files
-  no_log: true
-
-- name: Initialize authorized key count
-  ansible.builtin.set_fact:
-    common_authorized_key_count: 0
-
-- name: Count authorized keys for critical users
-  ansible.builtin.set_fact:
-    common_authorized_key_count: >-
-      {{ (common_authorized_key_count | int)
-         + ((item.content | b64decode).splitlines() | map('trim')
-            | reject('equalto', '') | reject('match', '^#') | list | length) }}
-  loop: "{{ common_authorized_keys_files.results }}"
-  no_log: true
-
-- name: Ensure at least one authorized key exists for a critical user
+- name: Require a non-root SSH login account
   ansible.builtin.assert:
-    that: (common_authorized_key_count | int) > 0
-    fail_msg: "No authorized keys found for the checked users."
-    success_msg: "Found {{ common_authorized_key_count }} authorized key entries for the checked users."
+    that: common_ssh_login_account.stdout != 'root'
+    fail_msg: "The SSH login account is root, but this role disables root SSH login."
+  tags: always
+
+- name: Look up the SSH login account's home directory
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ common_ssh_login_account.stdout }}"
+  tags: always
+
+- name: Check the SSH login account's authorized_keys
+  ansible.builtin.stat:
+    path: "{{ ansible_facts.getent_passwd[common_ssh_login_account.stdout][4] }}/.ssh/authorized_keys"
+  register: common_ssh_authorized_keys_stat
+  tags: always
+
+- name: Require an authorized_keys file for the SSH login account
+  ansible.builtin.assert:
+    that:
+      - common_ssh_authorized_keys_stat.stat.exists
+      - common_ssh_authorized_keys_stat.stat.isreg
+    fail_msg: "No authorized_keys file exists for SSH login account {{ common_ssh_login_account.stdout }}."
+  tags: always
+
+- name: Read the SSH login account's authorized_keys
+  ansible.builtin.slurp:
+    src: "{{ common_ssh_authorized_keys_stat.stat.path }}"
+  register: common_ssh_authorized_keys
+  no_log: true
+  tags: always
+
+- name: Require an authorized key for the SSH login account
+  ansible.builtin.assert:
+    that: >-
+      (common_ssh_authorized_keys.content | b64decode).splitlines()
+      | map('trim') | reject('equalto', '') | reject('match', '^#')
+      | list | length > 0
+    fail_msg: "No active authorized key exists for SSH login account {{ common_ssh_login_account.stdout }}."
+  tags: always
 
 - name: SSHD - Disable password authentication
   ansible.builtin.lineinfile:
