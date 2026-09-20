@@ -25,6 +25,19 @@ The recommended development environment uses Python 3.14 and installs the
 Python dependencies from `requirements.txt` and Galaxy collections from
 `requirements.yml`.
 
+Before reopening in the container, make sure these regular files exist on the
+host under `~/.ssh/`:
+
+- `binary-penguin-pull-app.2026-09-14.private-key.pem` — the GitHub App private
+  key used by the checkout role. If your key has a different filename, update
+  its `source` path in `.devcontainer/devcontainer.json`.
+- `known_hosts` — include verified host keys for the machines you manage.
+- `config` — an empty file is sufficient if you do not need custom SSH settings.
+
+The dev container bind mounts all three files, so a missing file can prevent it
+from opening. The GitHub App private key is available inside the container at
+`/run/secrets/binary-penguin-pull-app.pem` as a read-only mount.
+
 1. Install Docker, VS Code, and the VS Code **Dev Containers** extension.
 2. Open this repository in VS Code.
 3. Run **Dev Containers: Reopen in Container** from the Command Palette.
@@ -49,8 +62,8 @@ that the `ansible` server is connected. In a container terminal, run
 > container. Use the physical host's reachable hostname or IP address if it is
 > an intended managed node.
 
-VS Code automatically forwards a running host SSH agent; private keys are not
-copied into the container. Add the required key on the host before opening the
+VS Code automatically forwards a running host SSH agent for connections to
+managed hosts. Add the required SSH key to the host agent before opening the
 container, then verify forwarding from the container terminal:
 
 ```bash
