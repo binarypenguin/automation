@@ -12,7 +12,7 @@ parent-directory/
 `-- automation-inventory/
 ```
 
-The default inventory is `../automation-inventory/production/hosts`; its host and
+The default inventory is `../automation-inventory/production/inventory.yml`; its host and
 group variables live alongside it in the `production` directory. Additional
 inventories can be stored in subdirectories there. See the
 [Ansible inventory documentation](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html)
@@ -35,6 +35,14 @@ The container installs the Codex, Red Hat Ansible, and YAML extensions and
 configures the Ansible extension to use `/usr/local/bin/python`. Sign in to
 Codex when prompted after the container opens.
 
+The container also installs Node.js 24 and the official Ansible MCP server.
+When the repository is trusted, Codex loads `.codex/config.toml` and starts the
+server from the repository root over stdio. It uses the existing Ansible tools
+installed from `requirements.txt`; no MCP network port is needed. After
+rebuilding the container, restart the Codex extension and use `/mcp` to check
+that the `ansible` server is connected. In a container terminal, run
+`node --version` (expect version 24) and `codex mcp list` (expect `ansible`).
+
 > [!WARNING]
 > Inside the dev container, `localhost` and `127.0.0.1` refer to the container,
 > not the physical host. Running the localhost inventory will configure the
@@ -55,14 +63,14 @@ Run a safe syntax check without contacting managed hosts:
 ansible-playbook --syntax-check -i ../automation-inventory/localhost/hosts playbook.yml
 ```
 
-To apply the playbook to an intended inventory, use an interactive container
+To apply the playbook to the production inventory, use an interactive container
 terminal. Add `--ask-vault-pass` when encrypted variables are required;
 Ansible connects as `travis` by default, and become-password prompting is
 enabled by `ansible.cfg`. Set `ansible_user` for hosts that use a different SSH
 account.
 
 ```bash
-ansible-playbook -i ../automation-inventory/<inventory>/hosts playbook.yml --ask-vault-pass
+ansible-playbook -i ../automation-inventory/production/inventory.yml playbook.yml --ask-vault-pass
 ```
 
 ### Local virtual environment

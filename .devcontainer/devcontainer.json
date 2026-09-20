@@ -5,8 +5,14 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "features": {
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "24"
+    }
+  },
   "containerUser": "root",
   "remoteUser": "root",
+  "postCreateCommand": "npm install --global --no-audit --no-fund @ansible/ansible-mcp-server@26.6.0",
   "mounts": [
     "source=${localEnv:HOME}/.ssh/binary-penguin-pull-app.2026-09-14.private-key.pem,target=/run/secrets/binary-penguin-pull-app.pem,type=bind,readonly",
     "source=${localEnv:HOME}/.ssh/known_hosts,target=/root/.ssh/known_hosts,type=bind,readonly",

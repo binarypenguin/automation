@@ -15,7 +15,7 @@
   ],
   "settings": {
     "ansible.ansible.path": "/usr/local/bin/ansible",
-    "ansible.inventory": "../automation-inventory/production/hosts",
-    "ansible.mcpServer.enabled": true
+    "ansible.inventory": "../automation-inventory/production/inventory.yml",
+    "chatgpt.openOnStartup": true
   }
 }

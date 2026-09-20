@@ -1,0 +1,4 @@
+[mcp_servers.ansible]
+command = "ansible-mcp-server"
+args = ["--stdio"]
+cwd = "/workspaces/automation"
