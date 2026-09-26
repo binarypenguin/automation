@@ -176,6 +176,34 @@ installation token from a PEM file mounted into the Ansible controller at
 Set `github_app_checkout_app_id`, `github_app_checkout_installation_id`, and
 `github_app_checkout_repositories` in inventory.
 
+### VPS Deployment
+
+The `vps_deploy` role validates, pulls, and applies the Antarctica VPS Compose
+stack on Endurance after its checkout is updated. Private GHCR credentials stay
+on the controller in the ignored, encrypted inventory file
+`production/group_vars/all/vault.yml`:
+
+```yaml
+ghcr_username: your-github-username
+ghcr_read_token: your-read-packages-token
+```
+
+During deployment, the role passes the token to `docker login` over standard
+input with logging disabled. It uses an isolated temporary Docker client
+configuration on the remote host for `docker compose pull` and `up -d`, then
+removes that directory even if deployment fails. It does not modify the
+rootless user's persistent Docker credentials.
+
+Update the checkout and deploy it with:
+
+```bash
+ansible-playbook playbook.yml --limit endurance \
+  --tags github-app-checkout,vps-deploy --ask-vault-pass
+```
+
+Use only the `vps-deploy` tag to reapply the checkout already present on the
+host without fetching it first.
+
 ### Workstation
 
 Installs Workstation only application.

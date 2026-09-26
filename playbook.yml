@@ -47,7 +47,6 @@
       tags:
         - github-app-checkout
 
-
 # Headscale Configuration
 - name: Headscale configuration
   hosts: headscale
@@ -122,3 +121,12 @@
         - firewall
         - security
         - ufw
+
+# VPS Deployment
+- name: Deploy public VPS services
+  hosts: endurance
+  become: true
+  roles:
+    - role: vps_deploy
+      tags:
+        - vps-deploy

@@ -1,0 +1,5 @@
+---
+vps_deploy_user: docker-public
+vps_deploy_uid: 1501
+vps_deploy_project_dir: /home/docker-public/antarctica/vps
+vps_deploy_registry: ghcr.io

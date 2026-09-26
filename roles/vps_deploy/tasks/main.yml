@@ -1,0 +1,133 @@
+---
+- name: Validate VPS deployment settings
+  ansible.builtin.assert:
+    that:
+      - vps_deploy_user | string | length > 0
+      - vps_deploy_uid is integer
+      - vps_deploy_project_dir is ansible.builtin.abs
+    fail_msg: >-
+      Provide a valid rootless Docker user, UID, and absolute project directory.
+
+- name: Require encrypted GHCR credentials
+  ansible.builtin.assert:
+    that:
+      - ghcr_username is defined
+      - ghcr_username | string | length > 0
+      - ghcr_read_token is defined
+      - ghcr_read_token | string | length > 0
+    fail_msg: >-
+      Define ghcr_username and ghcr_read_token in
+      production/group_vars/all/vault.yml and supply its Vault password.
+    quiet: true
+
+- name: Check the VPS Compose file
+  ansible.builtin.stat:
+    path: "{{ vps_deploy_project_dir }}/compose.yaml"
+  register: vps_deploy_compose_file
+
+- name: Check the VPS environment file
+  ansible.builtin.stat:
+    path: "{{ vps_deploy_project_dir }}/.env"
+  register: vps_deploy_environment_file
+
+- name: Require VPS runtime configuration
+  ansible.builtin.assert:
+    that:
+      - vps_deploy_compose_file.stat.isreg | default(false)
+      - vps_deploy_environment_file.stat.isreg | default(false)
+    fail_msg: >-
+      The VPS checkout needs compose.yaml and an ignored .env file before it
+      can be deployed. Copy .env.example to .env and fill in its values.
+
+- name: Validate the VPS Compose configuration
+  ansible.builtin.command:
+    argv:
+      - docker
+      - compose
+      - config
+      - --quiet
+    chdir: "{{ vps_deploy_project_dir }}"
+  become: true
+  become_user: "{{ vps_deploy_user }}"
+  environment:
+    HOME: "/home/{{ vps_deploy_user }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ vps_deploy_uid }}"
+    DOCKER_HOST: "unix:///run/user/{{ vps_deploy_uid }}/docker.sock"
+  changed_when: false
+  check_mode: false
+
+- name: Pull and deploy the private VPS images
+  when: not ansible_check_mode
+  block:
+    - name: Create temporary Docker client configuration
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: vps-docker-config-
+      become: true
+      become_user: "{{ vps_deploy_user }}"
+      register: vps_deploy_docker_config
+      changed_when: false
+
+    - name: Authenticate temporarily to the container registry
+      ansible.builtin.command:
+        argv:
+          - docker
+          - login
+          - "{{ vps_deploy_registry }}"
+          - --username
+          - "{{ ghcr_username }}"
+          - --password-stdin
+        stdin: "{{ ghcr_read_token }}"
+        stdin_add_newline: false
+      become: true
+      become_user: "{{ vps_deploy_user }}"
+      environment:
+        HOME: "/home/{{ vps_deploy_user }}"
+        DOCKER_CONFIG: "{{ vps_deploy_docker_config.path }}"
+      changed_when: false
+      no_log: true
+
+    - name: Pull VPS container images
+      ansible.builtin.command:
+        argv:
+          - docker
+          - compose
+          - pull
+        chdir: "{{ vps_deploy_project_dir }}"
+      become: true
+      become_user: "{{ vps_deploy_user }}"
+      environment:
+        HOME: "/home/{{ vps_deploy_user }}"
+        XDG_RUNTIME_DIR: "/run/user/{{ vps_deploy_uid }}"
+        DOCKER_HOST: "unix:///run/user/{{ vps_deploy_uid }}/docker.sock"
+        DOCKER_CONFIG: "{{ vps_deploy_docker_config.path }}"
+      changed_when: false
+
+    - name: Apply the VPS Compose stack
+      ansible.builtin.command:
+        argv:
+          - docker
+          - compose
+          - up
+          - -d
+        chdir: "{{ vps_deploy_project_dir }}"
+      become: true
+      become_user: "{{ vps_deploy_user }}"
+      environment:
+        HOME: "/home/{{ vps_deploy_user }}"
+        XDG_RUNTIME_DIR: "/run/user/{{ vps_deploy_uid }}"
+        DOCKER_HOST: "unix:///run/user/{{ vps_deploy_uid }}/docker.sock"
+        DOCKER_CONFIG: "{{ vps_deploy_docker_config.path }}"
+      register: vps_deploy_compose_up
+      changed_when: >-
+        (vps_deploy_compose_up.stdout ~ vps_deploy_compose_up.stderr)
+        is regex('(?im).*\b(created|recreated|started)\b.*')
+  always:
+    - name: Remove temporary Docker client configuration
+      ansible.builtin.file:
+        path: "{{ vps_deploy_docker_config.path }}"
+        state: absent
+      when:
+        - vps_deploy_docker_config is defined
+        - vps_deploy_docker_config.path is defined
+      changed_when: false
