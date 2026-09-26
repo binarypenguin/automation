@@ -16,7 +16,6 @@
   "mounts": [
     "source=${localEnv:HOME}/.ssh/binary-penguin-pull-app.2026-09-14.private-key.pem,target=/run/secrets/binary-penguin-pull-app.pem,type=bind,readonly",
     "source=${localEnv:HOME}/.ssh/known_hosts,target=/root/.ssh/known_hosts,type=bind,readonly",
-    "source=${localEnv:HOME}/.ssh/config,target=/root/.ssh/config,type=bind,readonly",
     "source=automation-codex,target=/root/.codex,type=volume"
   ],
 
