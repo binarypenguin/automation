@@ -2,3 +2,4 @@
 docker_apt_keyring: /etc/apt/keyrings/docker.asc
 docker_service: docker
 docker_rootless: false
+docker_rootless_enable_privileged_ports: false

@@ -80,6 +80,16 @@
       when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
       tags: [firewall, security, ufw]
 
+    - name: Allow configured inbound TCP ports before enabling UFW
+      community.general.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+        comment: 'Host-specific TCP service'
+      loop: "{{ firewall_allowed_tcp_ports | default([]) }}"
+      when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+      tags: [firewall, security, ufw]
+
     - name: Check the staged SSH rule with UFW
       community.general.ufw:
         rule: limit

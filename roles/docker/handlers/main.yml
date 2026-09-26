@@ -2,3 +2,16 @@
 - name: Update Docker APT cache
   ansible.builtin.apt:
     update_cache: true
+
+- name: Restart rootless Docker user services
+  ansible.builtin.systemd_service:
+    name: docker.service
+    scope: user
+    state: restarted
+  become: true
+  become_user: "{{ item.name }}"
+  environment:
+    HOME: "/home/{{ item.name }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ item.uid }}/bus"
+  loop: "{{ docker_rootless_users }}"

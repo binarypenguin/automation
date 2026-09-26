@@ -4,6 +4,13 @@
     name: "{{ docker_rootless_packages }}"
     state: present
 
+- name: Manage RootlessKit privileged-port capability
+  community.general.capabilities:
+    path: /usr/bin/rootlesskit
+    capability: "{{ docker_rootless_enable_privileged_ports | bool | ternary('cap_net_bind_service=ep', 'cap_net_bind_service') }}"
+    state: "{{ docker_rootless_enable_privileged_ports | bool | ternary('present', 'absent') }}"
+  notify: Restart rootless Docker user services
+
 - name: Stop and disable the rootful Docker socket and service
   ansible.builtin.systemd_service:
     name: "{{ item }}"
@@ -78,6 +85,9 @@
     XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
     DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ item.uid }}/bus"
   loop: "{{ docker_rootless_users }}"
+
+- name: Apply RootlessKit capability changes
+  ansible.builtin.meta: flush_handlers
 
 - name: Check each rootless Docker daemon is reachable
   ansible.builtin.command: docker --context rootless version

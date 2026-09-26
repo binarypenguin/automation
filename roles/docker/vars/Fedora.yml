@@ -24,4 +24,5 @@ docker_packages:
 docker_rootless_packages:
   - acl
   - docker-ce-rootless-extras
+  - libcap
   - shadow-utils

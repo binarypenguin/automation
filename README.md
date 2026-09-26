@@ -32,11 +32,13 @@ host under `~/.ssh/`:
   key used by the checkout role. If your key has a different filename, update
   its `source` path in `.devcontainer/devcontainer.json`.
 - `known_hosts` — include verified host keys for the machines you manage.
-- `config` — an empty file is sufficient if you do not need custom SSH settings.
 
-The dev container bind mounts all three files, so a missing file can prevent it
-from opening. The GitHub App private key is available inside the container at
-`/run/secrets/binary-penguin-pull-app.pem` as a read-only mount.
+The dev container bind mounts both files, so a missing file can prevent it from
+opening. The GitHub App private key is available inside the container at
+`/run/secrets/binary-penguin-pull-app.pem` as a read-only mount. Login keys are
+not copied into the container; VS Code forwards the host SSH agent instead. The
+host's SSH config is deliberately not mounted because identity paths on the host
+do not exist inside the container.
 
 1. Install Docker, VS Code, and the VS Code **Dev Containers** extension.
 2. Open this repository in VS Code.
@@ -83,8 +85,16 @@ enabled by `ansible.cfg`. Set `ansible_user` for hosts that use a different SSH
 account. The playbook disables SSH password authentication and root login.
 Before those changes, it requires a non-root login account with an
 `authorized_keys` file containing a non-comment entry. Verify key-based login
-from a second terminal before running it. On Debian and Ubuntu,
-it stages and checks a UFW SSH rule before enabling the default deny policy.
+from a second terminal before running it. On Debian and Ubuntu, it stages and
+checks a UFW SSH rule before enabling the default deny policy. Additional inbound
+TCP services can be declared per host and are staged before UFW is enabled:
+
+```yaml
+firewall_allowed_tcp_ports:
+  - '80'
+  - '443'
+```
+
 Review any existing UFW rules before applying the playbook.
 
 ```bash
@@ -132,6 +142,17 @@ docker_rootless_users:
   - name: frigate
     uid: 1500
 ```
+
+Rootless Docker cannot publish ports below 1024 by default. If a host needs those
+ports, grant `CAP_NET_BIND_SERVICE` to the RootlessKit binary:
+
+```yaml
+docker_rootless_enable_privileged_ports: true
+```
+
+The role reapplies the capability after package updates and restarts the rootless
+Docker user services when it changes. The default disabled setting removes this
+capability on hosts that do not publish privileged ports.
 
 Each UID is required, unique on the host, and between 1500 and 1599. The role
 stops and disables the system Docker service and socket, creates the accounts
