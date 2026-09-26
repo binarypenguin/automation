@@ -5,6 +5,7 @@
       - vps_deploy_user | string | length > 0
       - vps_deploy_uid is integer
       - vps_deploy_project_dir is ansible.builtin.abs
+      - vps_deploy_docker_socket is ansible.builtin.abs
     fail_msg: >-
       Provide a valid rootless Docker user, UID, and absolute project directory.
 
@@ -39,6 +40,15 @@
       The VPS checkout needs compose.yaml and an ignored .env file before it
       can be deployed. Copy .env.example to .env and fill in its values.
 
+- name: Configure the rootless Docker socket for the VPS stack
+  ansible.builtin.lineinfile:
+    path: "{{ vps_deploy_project_dir }}/.env"
+    regexp: '^DOCKER_SOCKET='
+    line: "DOCKER_SOCKET={{ vps_deploy_docker_socket }}"
+    owner: "{{ vps_deploy_user }}"
+    group: "{{ vps_deploy_user }}"
+    mode: "0600"
+
 - name: Validate the VPS Compose configuration
   ansible.builtin.command:
     argv:
@@ -52,7 +62,7 @@
   environment:
     HOME: "/home/{{ vps_deploy_user }}"
     XDG_RUNTIME_DIR: "/run/user/{{ vps_deploy_uid }}"
-    DOCKER_HOST: "unix:///run/user/{{ vps_deploy_uid }}/docker.sock"
+    DOCKER_HOST: "unix://{{ vps_deploy_docker_socket }}"
   changed_when: false
   check_mode: false
 
@@ -99,7 +109,7 @@
       environment:
         HOME: "/home/{{ vps_deploy_user }}"
         XDG_RUNTIME_DIR: "/run/user/{{ vps_deploy_uid }}"
-        DOCKER_HOST: "unix:///run/user/{{ vps_deploy_uid }}/docker.sock"
+        DOCKER_HOST: "unix://{{ vps_deploy_docker_socket }}"
         DOCKER_CONFIG: "{{ vps_deploy_docker_config.path }}"
       changed_when: false
 
@@ -116,7 +126,7 @@
       environment:
         HOME: "/home/{{ vps_deploy_user }}"
         XDG_RUNTIME_DIR: "/run/user/{{ vps_deploy_uid }}"
-        DOCKER_HOST: "unix:///run/user/{{ vps_deploy_uid }}/docker.sock"
+        DOCKER_HOST: "unix://{{ vps_deploy_docker_socket }}"
         DOCKER_CONFIG: "{{ vps_deploy_docker_config.path }}"
       register: vps_deploy_compose_up
       changed_when: >-

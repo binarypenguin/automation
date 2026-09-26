@@ -192,7 +192,11 @@ During deployment, the role passes the token to `docker login` over standard
 input with logging disabled. It uses an isolated temporary Docker client
 configuration on the remote host for `docker compose pull` and `up -d`, then
 removes that directory even if deployment fails. It does not modify the
-rootless user's persistent Docker credentials.
+rootless user's persistent Docker credentials. The role also manages
+`DOCKER_SOCKET` in the stack's existing `.env` file, deriving the default
+`/run/user/1501/docker.sock` path from `vps_deploy_uid`. Override
+`vps_deploy_docker_socket` in inventory only when the daemon uses another
+socket path.
 
 Update the checkout and deploy it with:
 
